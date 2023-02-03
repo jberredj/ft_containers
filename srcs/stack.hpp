@@ -11,6 +11,14 @@ namespace ft {
 		typedef typename Container::size_type		size_type;
 		typedef typename Container::reference		reference;
 		typedef typename Container::const_reference	const_reference;
+
+		stack(const container_type& ctnr = container_type()) : c(cont) {}
+		stack(const stack& src) : c(src.c) {}
+		~stack() {}
+
+
+	protected:
+		container_type c;
 	}
 }
 
