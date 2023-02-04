@@ -77,3 +77,31 @@ int testPop(unsigned int seed) {
 		return 0;
 	}
 }
+
+int testEmpty(unsigned int seed) {
+	NAMESPACE::stack<int> s;
+	if (!s.empty()) {
+		std::cerr << "testEmpty() failed: empty() function should return true" << std::endl;
+		return 1;
+	} else {
+		std::cout << "testEmpty() passed" << std::endl;
+	}
+
+	s.push(10);
+	if (s.empty()) {
+		std::cerr << "testEmpty() failed: empty() function should return false after push()" << std::endl;
+		return 1;
+	} else {
+		std::cout << "testEmpty() passed" << std::endl;
+	}
+
+	s.pop();
+	if (!s.empty()) {
+		std::cerr << "testEmpty() failed: empty() function should return true after pop()" << std::endl;
+		return 1;
+	} else {
+		std::cout << "testEmpty() passed" << std::endl;
+	}
+
+	return 0;
+}
