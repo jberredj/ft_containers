@@ -17,18 +17,14 @@ typedef int (*test_func)(unsigned int);
 
 int timeTest(const char* testName, test_func func, unsigned int seed) {
   std::clock_t start_time = std::clock();
-
   int result = (*func)(seed);
-
   std::clock_t end_time = std::clock();
+
   double duration = (end_time - start_time) / (double)CLOCKS_PER_SEC * 1000;
-
-  if (result == 0) {
+  if (result == 0) 
 	std::cout << testName << " passed in " << duration << " milliseconds" << std::endl;
-  } else {
+  else 
 	std::cerr << testName << " failed with error code " << result << std::endl;
-  }
-
   return result;
 }
 
@@ -38,10 +34,9 @@ int testSize(unsigned int seed) {
 	if (s.size() != 0) {
 		std::cerr << "testSize() failed: size() function should return 0" << std::endl;
 		return 1;
-	} else {
-		std::cout << "testSize() passed" << std::endl;
-		return 0;
 	}
+	std::cout << "testSize() passed" << std::endl;
+	return 0;
 }
 
 int testPush(unsigned int seed) {
@@ -54,13 +49,13 @@ int testPush(unsigned int seed) {
 		s.push(val);
 		lastVal = val;
 	}
+
 	if (s.size() != numInputs || s.top() != lastVal) {
 		std::cerr << "testPush() failed: size() function should return " << numInputs << " and top() function should return the last value pushed" << std::endl;
 		return 1;
-	} else {
-		std::cout << "testPush() passed" << std::endl;
-		return 0;
-	}
+	} 
+	std::cout << "testPush() passed" << std::endl;
+	return 0;
 }
 
 int testPop(unsigned int seed) {
@@ -74,6 +69,7 @@ int testPop(unsigned int seed) {
 		s.push(val);
 		control.push(val);
 	}
+
 	control.pop();
 	int errorCount = 0;
 	for (int i = 0; i < numInputs; i++) {
@@ -93,26 +89,22 @@ int testEmpty(unsigned int seed) {
 	if (!s.empty()) {
 		std::cerr << "testEmpty() failed: empty() function should return true" << std::endl;
 		return 1;
-	} else {
-		std::cout << "testEmpty() passed" << std::endl;
 	}
+	std::cout << "testEmpty() 1 passed" << std::endl;
 
 	s.push(10);
 	if (s.empty()) {
 		std::cerr << "testEmpty() failed: empty() function should return false after push()" << std::endl;
 		return 1;
-	} else {
-		std::cout << "testEmpty() passed" << std::endl;
 	}
+	std::cout << "testEmpty() 2 passed" << std::endl;
 
 	s.pop();
 	if (!s.empty()) {
 		std::cerr << "testEmpty() failed: empty() function should return true after pop()" << std::endl;
 		return 1;
-	} else {
-		std::cout << "testEmpty() passed" << std::endl;
 	}
-
+	std::cout << "testEmpty() 3 passed" << std::endl;
 	return 0;
 }
 
@@ -122,11 +114,10 @@ int testAll(unsigned int seed) {
 	errorCount += timeTest("testPush", testPush, seed);
 	errorCount += timeTest("testPop", testPop, seed);
 	errorCount += timeTest("testEmpty", testEmpty, seed);
-	if (errorCount == 0) {
+	if (errorCount == 0) 
 		std::cout << "All tests passed" << std::endl;
-	} else {
+	else
 		std::cerr << "Total number of test failures: " << errorCount << std::endl;
-	}
 	return errorCount;
 }
 
