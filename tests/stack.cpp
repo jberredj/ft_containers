@@ -1,6 +1,7 @@
 #include <iostream>
-#include <chrono>
 #include <stack>
+#include <cstdlib>
+#include <ctime>
 
 #define USING_STD
 #ifdef USING_STD
@@ -15,15 +16,15 @@
 typedef int (*test_func)(unsigned int);
 
 int timeTest(const char* testName, test_func func, unsigned int seed) {
-  std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
+  std::clock_t start_time = std::clock();
 
   int result = (*func)(seed);
 
-  std::chrono::time_point<std::chrono::high_resolution_clock> stop = std::chrono::high_resolution_clock::now();
-  std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+  std::clock_t end_time = std::clock();
+  double duration = (end_time - start_time) / (double)CLOCKS_PER_SEC * 1000;
 
   if (result == 0) {
-	std::cout << testName << " passed in " << duration.count() << " microseconds" << std::endl;
+	std::cout << testName << " passed in " << duration << " milliseconds" << std::endl;
   } else {
 	std::cerr << testName << " failed with error code " << result << std::endl;
   }
@@ -32,7 +33,8 @@ int timeTest(const char* testName, test_func func, unsigned int seed) {
 }
 
 int testSize(unsigned int seed) {
-	NAMESPACE::stack<int, INNERCONTAINER<int>> s;
+	(void)seed;
+	NAMESPACE::stack<int, INNERCONTAINER<int> > s;
 	if (s.size() != 0) {
 		std::cerr << "testSize() failed: size() function should return 0" << std::endl;
 		return 1;
@@ -43,11 +45,11 @@ int testSize(unsigned int seed) {
 }
 
 int testPush(unsigned int seed) {
-	NAMESPACE::stack<int, INNERCONTAINER<int>> s;
+	NAMESPACE::stack<int, INNERCONTAINER<int> > s;
 	srand(seed);
-	int numInputs = rand() % 9901 + 100;
+	unsigned int numInputs = rand() % 9901 + 100;
 	int lastVal;
-	for (int i = 0; i < numInputs; i++) {
+	for (unsigned int i = 0; i < numInputs; i++) {
 		int val = rand();
 		s.push(val);
 		lastVal = val;
@@ -62,8 +64,8 @@ int testPush(unsigned int seed) {
 }
 
 int testPop(unsigned int seed) {
-	NAMESPACE::stack<int, INNERCONTAINER<int>> s;
-	std::stack<int, INNERCONTAINER<int>> control;
+	NAMESPACE::stack<int, INNERCONTAINER<int> > s;
+	std::stack<int, INNERCONTAINER<int> > control;
 	srand(seed);
 	int numInputs = rand() % 9901 + 100;
 	int val = 0;
@@ -86,7 +88,8 @@ int testPop(unsigned int seed) {
 }
 
 int testEmpty(unsigned int seed) {
-	NAMESPACE::stack<int, INNERCONTAINER<int>> s;
+	(void)seed;
+	NAMESPACE::stack<int, INNERCONTAINER<int> > s;
 	if (!s.empty()) {
 		std::cerr << "testEmpty() failed: empty() function should return true" << std::endl;
 		return 1;
