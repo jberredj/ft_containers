@@ -38,9 +38,22 @@ int testSize(unsigned int seed) {
 		return 0;
 	}
 }
+
+int testPush(unsigned int seed) {
+	NAMESPACE::stack<int> s;
+	srand(seed);
+	int numInputs = rand() % 9901 + 100;
+	int lastVal;
+	for (int i = 0; i < numInputs; i++) {
+		int val = rand();
+		s.push(val);
+		lastVal = val;
+	}
+	if (s.size() != numInputs || s.top() != lastVal) {
+		std::cerr << "testPush() failed: size() function should return " << numInputs << " and top() function should return the last value pushed" << std::endl;
 		return 1;
 	} else {
-		std::cout << "Test case testSize() passed" << std::endl;
+		std::cout << "testPush() passed" << std::endl;
 		return 0;
 	}
 }
