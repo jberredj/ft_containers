@@ -57,3 +57,23 @@ int testPush(unsigned int seed) {
 		return 0;
 	}
 }
+
+int testPop(unsigned int seed) {
+	NAMESPACE::stack<int> s;
+	srand(seed);
+	int numInputs = rand() % 9901 + 100;
+	int lastVal;
+	for (int i = 0; i < numInputs; i++) {
+		int val = rand();
+		s.push(val);
+		lastVal = val;
+	}
+	s.pop();
+	if (s.size() != numInputs - 1 || s.top() != lastVal) {
+		std::cerr << "testPop() failed: size() function should return " << numInputs - 1 << " and top() function should return the second-to-last value pushed after pop()" << std::endl;
+		return 1;
+	} else {
+		std::cout << "testPop() passed" << std::endl;
+		return 0;
+	}
+}
