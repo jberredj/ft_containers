@@ -8,6 +8,9 @@
 #else
 # define NAMESPACE ft
 #endif
+#ifndef INNERCONTAINER
+# define INNERCONTAINER std::deque
+#endif
 
 typedef int (*test_func)(unsigned int);
 
@@ -29,7 +32,7 @@ int timeTest(const char* testName, test_func func, unsigned int seed) {
 }
 
 int testSize(unsigned int seed) {
-	NAMESPACE::stack<int> s;
+	NAMESPACE::stack<int, INNERCONTAINER<int>> s;
 	if (s.size() != 0) {
 		std::cerr << "testSize() failed: size() function should return 0" << std::endl;
 		return 1;
@@ -40,7 +43,7 @@ int testSize(unsigned int seed) {
 }
 
 int testPush(unsigned int seed) {
-	NAMESPACE::stack<int> s;
+	NAMESPACE::stack<int, INNERCONTAINER<int>> s;
 	srand(seed);
 	int numInputs = rand() % 9901 + 100;
 	int lastVal;
@@ -59,7 +62,8 @@ int testPush(unsigned int seed) {
 }
 
 int testPop(unsigned int seed) {
-	NAMESPACE::stack<int> s;
+	NAMESPACE::stack<int, INNERCONTAINER<int>> s;
+	std::stack<int, INNERCONTAINER<int>> control;
 	srand(seed);
 	int numInputs = rand() % 9901 + 100;
 	int val = 0;
@@ -82,7 +86,7 @@ int testPop(unsigned int seed) {
 }
 
 int testEmpty(unsigned int seed) {
-	NAMESPACE::stack<int> s;
+	NAMESPACE::stack<int, INNERCONTAINER<int>> s;
 	if (!s.empty()) {
 		std::cerr << "testEmpty() failed: empty() function should return true" << std::endl;
 		return 1;
