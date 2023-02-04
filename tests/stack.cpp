@@ -27,3 +27,20 @@ int timeTest(const char* testName, test_func func, unsigned int seed) {
 
   return result;
 }
+
+int testSize(unsigned int seed) {
+	NAMESPACE::stack<int> s;
+	if (s.size() != 0) {
+		std::cerr << "testSize() failed: size() function should return 0" << std::endl;
+		return 1;
+	} else {
+		std::cout << "testSize() passed" << std::endl;
+		return 0;
+	}
+}
+		return 1;
+	} else {
+		std::cout << "Test case testSize() passed" << std::endl;
+		return 0;
+	}
+}
