@@ -106,3 +106,27 @@ int testEmpty(unsigned int seed) {
 
 	return 0;
 }
+
+int testAll(unsigned int seed) {
+	int errorCount = 0;
+	errorCount += timeTest("testSize", testSize, seed);
+	errorCount += timeTest("testPush", testPush, seed);
+	errorCount += timeTest("testPop", testPop, seed);
+	errorCount += timeTest("testEmpty", testEmpty, seed);
+	if (errorCount == 0) {
+		std::cout << "All tests passed" << std::endl;
+	} else {
+		std::cerr << "Total number of test failures: " << errorCount << std::endl;
+	}
+	return errorCount;
+}
+
+int main(int ac, char* av[]) {
+	if (ac != 2) {
+		std::cerr << "Usage: " << av[0] << " seed" << std::endl;
+		return 1;
+	}
+	unsigned int seed = atoi(av[1]);
+	int errorCount = testAll(seed);
+	return errorCount;
+}
