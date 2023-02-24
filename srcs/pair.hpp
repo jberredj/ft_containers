@@ -50,4 +50,9 @@ bool	operator>(const ft::pair<T1, T2> &lhs, const ft::pair<U1, U2> &rhs) {
 	return !(lhs < rhs);
 }
 
+template <class T1, class T2>
+ft::pair<T1, T2> make_pair(const T1& first, const T2& second) {
+	return pair<T1, T2>(first, second);
+}
+
 #endif
