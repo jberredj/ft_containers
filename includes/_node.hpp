@@ -52,7 +52,6 @@ namespace ft {
 		RBNode*		_left;
 		RBNode*		_right;
 		RBNode*		_parent;
-		RBNode*		_terminator;
 		bool		_isNotNull;
 	};
 
