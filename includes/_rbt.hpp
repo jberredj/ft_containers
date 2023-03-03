@@ -177,13 +177,13 @@ namespace ft {
 		}
 
 		void		_transplant(rbnode_t* dest, rbnode_t* src) {
-			if (_isRoot(dest->_parent()))
+			if (_isRoot(dest->getParent()))
 				_root = src;
 			else if (_isLeftChild(dest))
 				dest->getParent()->setLeft(src);
 			else
 				dest->getParent()->setRight(src);
-			src->setParent(dest->getParent());
+			// src->setParent(dest->getParent());
 		}
 
 		void	_removeFixup(rbnode_t* transplantedNode) {
