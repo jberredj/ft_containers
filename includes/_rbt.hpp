@@ -155,6 +155,120 @@ namespace ft {
 			return	_insertFixup(newNode);
 		}
 
+		void		_transplant(rbnode_t* dest, rbnode_t* src) {
+			if (_isRoot(dest->_parent()))
+				_root = src;
+			else if (_isLeftChild(dest))
+				dest->getParent()->setLeft(src);
+			else
+				dest->getParent()->setRight(src);
+			src->setParent(dest->getParent());
+		}
+
+		void	_removeFixup(rbnode_t* transplantedNode) {
+			while (!_isRoot(transplantedNode) && transplantedNode->getColor() != ft::BLACK) {
+				if (_isLeftChild(transplantedNode)) {
+					rbnode_t*	sibling = transplantedNode->getSibling();
+					if (sibling->getColor() == ft::RED) {
+						sibling->setColor(ft::BLACK);
+						transplantedNode->getParent()->setColor(ft::RED);
+						_leftRotate(transplantedNode->getParent());
+						sibling = transplantedNode->getParent()->getRight();
+					}
+					if (sibling->getLeft()->getColor() == ft::BLACK && sibling->getRight()->getColor() == ft::BLACK) {
+						sibling->setColor(ft::RED);
+						transplantedNode = transplantedNode->getParent();
+					}
+					else {
+						if (sibling->getRight()->getColor() == ft::BLACK) {
+							sibling->getLeft()->setColor(ft::BLACK);
+							sibling->setColor(ft::RED);
+							_rightRotate(sibling);
+							sibling = sibling->getParent()->getRight();
+						}
+						sibling->setColor(transplantedNode->getParent()->getColor());
+						transplantedNode->getParent()->setColor(ft::BLACK);
+						sibling->getRight()->setColor(ft::BLACK);
+						_leftRotate(transplantedNode->getParent());
+						transplantedNode = _root;
+					}
+				}
+				else {
+					rbnode_t*	sibling = transplantedNode->getSibling();
+					if (sibling->getColor() == ft::RED) {
+						sibling->setColor(ft::BLACK);
+						transplantedNode->getParent()->setColor(ft::RED);
+						_rightRotate(transplantedNode->getParent());
+						sibling = transplantedNode->getParent()->getLeft();
+					}
+					if (sibling->getRight()->getColor() == ft::BLACK && sibling->getLeft()->getColor() == ft::BLACK) {
+						sibling->setColor(ft::RED);
+						transplantedNode = transplantedNode->getParent();
+					}
+					else {
+						if (sibling->getLeft()->getColor() == ft::BLACK) {
+							sibling->getRight()->setColor(ft::BLACK);
+							sibling->setColor(ft::RED);
+							_leftRotate(sibling);
+							sibling = sibling->getParent()->getLeft();
+						}
+						sibling->setColor(transplantedNode->getParent()->getColor());
+						transplantedNode->getParent()->setColor(ft::BLACK);
+						sibling->getLeft()->setColor(ft::BLACK);
+						_RightRotate(transplantedNode->getParent());
+						transplantedNode = _root;
+					}
+				}
+			}
+			transplantedNode->setColor(ft::BLACK);
+		}
+
+		void	_remove(rbnode_t* toDelete) {
+			rbnode_t*	nearestGreaterNode = toDelete;
+			nodeColor	ogColor = toDelete->getColor();
+			rbnode_t*	transplantedNode = &_null;
+
+			if (_leftIsLeaf(toDelete)) {
+				transplantedNode = toDelete->getRight();
+				_transplant(toDelete, transplantedNode);
+			}
+			else if (_rightIsLeaf(toDelete)) {
+				transplantedNode = toDelete->getLeft();
+				_transplant(toDelete, transplantedNode);
+			}
+			else {
+				nearestGreaterNode = _min(toDelete->getRight());
+				ogColor = nearestGreaterNode->getColor();
+				transplantedNode = nearestGreaterNode->getRight();
+				if (nearestGreaterNode->getParent() == toDelete)
+					transplantedNode->setParent(nearestGreaterNode);
+				else {
+					_transplant(nearestGreaterNode, transplantedNode);
+					nearestGreaterNode->setRight(transplantedNode);
+				}
+				_transplant(toDelete, nearestGreaterNode);
+				nearestGreaterNode->setLeft(toDelete->getLeft());
+				nearestGreaterNode->setColor(toDelete->getColor());
+			}
+			if (ogColor == ft::BLACK)
+				_removeFixup(transplantedNode);
+			_nalloc.destroy(toDelete);
+			_nalloc.deallocate(toDelete, 1);
+			_null.setParent(&_null); 
+		}
+
+		void	_remove(T key) {
+			rbnode_t*	toDelete = _search(_root, key);
+			if (toDelete)
+				_remove(toDelete);
+		}
+
+		rbnode_t*	_min(rbnode_t* node) const {
+			if (!_leftIsLeaf(node))
+				return _min(node->getLeft());
+			return node;
+		}
+
 	};
 }
 
