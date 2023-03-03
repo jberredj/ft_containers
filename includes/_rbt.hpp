@@ -41,6 +41,16 @@ namespace ft {
 		bool		_isLeftChild(rbnode_t* node) {return (!_isRoot(node) && (node == node->getParent()->getLeft()));}
 		bool		_isRightChild(rbnode_t* node) {return !_isLeftChild(node);}
  
+		rbnode_t*	_search(rbnode_t* node, T key) const {
+			if (key < node->key)
+				return _search(node->getLeft(), key);
+			else if (key > node->key)
+				return _search(node->getRight(), key);
+			if (_isLeaf(node))
+				return NULL;
+			return node;
+		}
+
 	};
 }
 
