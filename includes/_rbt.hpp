@@ -80,6 +80,81 @@ namespace ft {
 			x->setRight(y); 
 		}
 
+		rbnode_t*	newRBNode(T Key) {
+			rbnode_t	tmp(Key, &_null);
+			rbnode_t*	newAddr = NULL;
+			newAddr = _nalloc.allocate(1);
+			_nalloc.construct(newAddr, tmp);
+			return newAddr;
+		}
+
+		rbnode_t*	_insertFixup(rbnode_t* newNode) {
+			while (newNode->getParent()->getColor() == ft::RED)
+			{
+				if (_isLeftChild(newNode->getParent())) {
+					rbnode_t*	uncle = newNode->getUncle();
+					if (uncle->getColor() == ft::RED) {
+						newNode->getParent()->setColor(ft::BLACK);
+						newNode->setColor(ft::BLACK);
+						newNode->getGrandParent()->setColor(ft::RED);
+						newNode = newNode->getGrandParent();
+					}
+					else  {
+						if (_isRightChild(newNode)) {
+							newNode = newNode->getParent();
+							_leftRotate(newNode);
+						}
+						newNode->getParent()->setColor(ft::BLACK);
+						newNode->getGrandParent()->setColor(ft::RED);
+						_rightRotate(newNode->getGrandParent());
+					}
+				}
+				else {
+					rbnode_t*	uncle = newNode->getUncle();
+					if (uncle->getColor() == ft::RED) {
+						newNode->getParent()->setColor(ft::BLACK);
+						newNode->setColor(ft::BLACK);
+						newNode->getGrandParent()->setColor(ft::RED);
+						newNode = newNode->getGrandParent();
+					}
+					else  {
+						if (_isLeftChild(newNode)) {
+							newNode = newNode->getParent();
+							_rightRotate(newNode);
+						}
+						newNode->getParent()->setColor(ft::BLACK);
+						newNode->getGrandParent()->setColor(ft::RED);
+						_leftRotate(newNode->getGrandParent());
+					}
+				}
+			}
+			_root->setColor(ft::BLACK);
+			return newNode;
+		}
+
+		rbnode_t*	_insert( T key) {
+			rbnode_t*	parent = &_null;
+			rbnode_t*	crawler = _root;
+			while (_isNotLeaf(crawler))
+			{
+				parent = crawler;
+				if (key < crawler->key)
+					crawler = crawler->getLeft();
+				else if (key > crawler->key)
+					crawler = crawler->getRight();
+				else
+					return crawler;
+			}
+			rbnode_t*	newNode = newRBNode(key);
+			if (_isNull(parent))
+				_root = newNode;
+			else if (key < parent->key)
+				parent->setLeft(newNode);
+			else
+				parent->setRight(newNode);
+			return	_insertFixup(newNode);
+		}
+
 	};
 }
 
