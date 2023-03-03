@@ -52,6 +52,9 @@ namespace ft {
 
 	private:
 		typedef typename Allocator::template rebind< RBNode<T> >::other	_Node_alloc; // templated typedef would not work without ::template
+		typedef															void(RBT::*rotateFuncP)(rbnode_t*);
+		typedef															bool(RBT::*testFuncP)(rbnode_t*);
+		typedef 														RBNode<T>*(RBNode<T>::*getFuncP)(void);
 		allocator_type													_alloc;
 		_Node_alloc														_nalloc;
 		rbnode_t*														_root;
@@ -109,56 +112,44 @@ namespace ft {
 			x->setRight(y); 
 		}
 
+		void	_insertFixupOperation(rbnode_t* newNode, testFuncP isXChild,
+					rotateFuncP rotateFunc1, rotateFuncP rotateFunc2) {
+			rbnode_t*	uncle = newNode->getUncle();
+			if (uncle->getColor() == ft::RED) {
+				newNode->getParent()->setColor(ft::BLACK);
+				newNode->setColor(ft::BLACK);
+				newNode->getGrandParent()->setColor(ft::RED);
+				newNode = newNode->getGrandParent();
+			}
+			else  {
+				if ((this->*isXChild)(newNode)) {
+					newNode = newNode->getParent();
+					(this->*rotateFunc1)(newNode);
+				}
+				newNode->getParent()->setColor(ft::BLACK);
+				newNode->getGrandParent()->setColor(ft::RED);
+				(this->*rotateFunc2)(newNode->getGrandParent());
+			}
+		}
+
+		rbnode_t*	_insertFixup(rbnode_t* newNode) {
+			while (newNode->getParent()->getColor() == ft::RED)
+			{
+				if (_isLeftChild(newNode->getParent()))
+					_insertFixupOperation(newNode, &RBT::_isRightChild, &RBT::_leftRotate, &RBT::_rightRotate);
+				else
+					_insertFixupOperation(newNode, &RBT::_isLeftChild, &RBT::_rightRotate, &RBT::_leftRotate);
+			}
+			_root->setColor(ft::BLACK);
+			return newNode;
+		}
+
 		rbnode_t*	newRBNode(T Key) {
 			rbnode_t	tmp(Key, &_null);
 			rbnode_t*	newAddr = NULL;
 			newAddr = _nalloc.allocate(1);
 			_nalloc.construct(newAddr, tmp);
 			return newAddr;
-		}
-
-		rbnode_t*	_insertFixup(rbnode_t* newNode) {
-			while (newNode->getParent()->getColor() == ft::RED)
-			{
-				if (_isLeftChild(newNode->getParent())) {
-					rbnode_t*	uncle = newNode->getUncle();
-					if (uncle->getColor() == ft::RED) {
-						newNode->getParent()->setColor(ft::BLACK);
-						newNode->setColor(ft::BLACK);
-						newNode->getGrandParent()->setColor(ft::RED);
-						newNode = newNode->getGrandParent();
-					}
-					else  {
-						if (_isRightChild(newNode)) {
-							newNode = newNode->getParent();
-							_leftRotate(newNode);
-						}
-						newNode->getParent()->setColor(ft::BLACK);
-						newNode->getGrandParent()->setColor(ft::RED);
-						_rightRotate(newNode->getGrandParent());
-					}
-				}
-				else {
-					rbnode_t*	uncle = newNode->getUncle();
-					if (uncle->getColor() == ft::RED) {
-						newNode->getParent()->setColor(ft::BLACK);
-						newNode->setColor(ft::BLACK);
-						newNode->getGrandParent()->setColor(ft::RED);
-						newNode = newNode->getGrandParent();
-					}
-					else  {
-						if (_isLeftChild(newNode)) {
-							newNode = newNode->getParent();
-							_rightRotate(newNode);
-						}
-						newNode->getParent()->setColor(ft::BLACK);
-						newNode->getGrandParent()->setColor(ft::RED);
-						_leftRotate(newNode->getGrandParent());
-					}
-				}
-			}
-			_root->setColor(ft::BLACK);
-			return newNode;
 		}
 
 		rbnode_t*	_insert( T key) {
