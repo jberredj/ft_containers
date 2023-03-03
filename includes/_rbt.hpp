@@ -51,6 +51,35 @@ namespace ft {
 			return node;
 		}
 
+		void	_rotateSwapNode(rbnode_t* dest, rbnode_t* src) {
+			if (_isRoot(dest->getParent()))
+				_root = src;
+			else if (_isLeftChild(dest))
+				dest->getParent()->setLeft(src);
+			else
+				dest->getParent()->setRight(src);
+		}
+
+		void	_leftRotate(rbnode_t* x) {
+			rbnode_t*	y = x->getRight();
+			x->setRight(y->getLeft());  // 
+
+			y->setParent(x->getParent());
+
+			_rotateSwapNode(x, y);
+			y->setLeft(x); 
+		}
+
+		void	_rightRotate(rbnode_t* y) {
+			rbnode_t*	x = y->getLeft();
+			y->setLeft(x->getRight());
+
+			x->setParent(y->getParent());
+
+			_rotateSwapNode(y, x);
+			x->setRight(y); 
+		}
+
 	};
 }
 
