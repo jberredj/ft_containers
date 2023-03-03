@@ -84,33 +84,23 @@ namespace ft {
 			return node;
 		}
 
-		void	_rotateSwapNode(rbnode_t* dest, rbnode_t* src) {
-			if (_isRoot(dest->getParent()))
-				_root = src;
-			else if (_isLeftChild(dest))
-				dest->getParent()->setLeft(src);
-			else
-				dest->getParent()->setRight(src);
-		}
-
-		void	_leftRotate(rbnode_t* x) {
-			rbnode_t*	y = x->getRight();
-			x->setRight(y->getLeft());  // 
+		void	_rotateOperation(rbnode_t* x, getFuncP getChild1, getFuncP getChild2,
+					setFuncP setChild1, setFuncP setChild2) {
+			rbnode_t*	y = (x->*getChild2)();
+			(x->*setChild2)((y->*getChild1)());  // 
 
 			y->setParent(x->getParent());
 
-			_rotateSwapNode(x, y);
-			y->setLeft(x); 
+			_transplant(x, y);
+			(y->*setChild1)(x);
+		}
+
+		void	_leftRotate(rbnode_t* x) {
+			_rotateOperation(x, &RBNode<T>::getLeft, &RBNode<T>::getRight, &RBNode<T>::setLeft, &RBNode<T>::setRight);
 		}
 
 		void	_rightRotate(rbnode_t* y) {
-			rbnode_t*	x = y->getLeft();
-			y->setLeft(x->getRight());
-
-			x->setParent(y->getParent());
-
-			_rotateSwapNode(y, x);
-			x->setRight(y); 
+			_rotateOperation(y, &RBNode<T>::getRight, &RBNode<T>::getLeft, &RBNode<T>::setRight, &RBNode<T>::setLeft);
 		}
 
 		void	_insertFixupOperation(rbnode_t* newNode, testFuncP isXChild,
