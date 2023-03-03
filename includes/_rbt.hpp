@@ -19,7 +19,36 @@ namespace ft {
 		
 		RBT() : _root(&_null), _null(RBNode<T>()) {}
 		~RBT() {
+			_emptyTree(_root);
 		}
+
+		rbnode_t* insert(T key) {
+			return _insert(key);
+		}
+
+		rbnode_t* search(T key) {
+			_null.key = key;
+			_search(_root, key);
+		}
+
+		void	remove(T key) {
+			_root = _remove(_root, key);
+		}
+
+		void	emptyTree(void) {
+			_emptyTree(_root);
+		}
+#ifdef BSTTEST
+		void inorder_print(void) {
+			_inorder_print(_root);
+		}
+
+		std::list<rbnode_t*> inorder_list(void) {
+			std::list<rbnode_t*> result;
+			_inorder_list(_root, result);
+			return result;
+		}
+#endif
 
 	private:
 		typedef typename Allocator::template rebind< RBNode<T> >::other	_Node_alloc; // templated typedef would not work without ::template
@@ -268,6 +297,41 @@ namespace ft {
 				return _min(node->getLeft());
 			return node;
 		}
+
+		rbnode_t*	_max(rbnode_t* node) const {
+			if (!_rightIsLeaf(node))
+				return _min(node->getRight());
+			return node;
+		}
+
+		void	_emptyTree(rbnode_t* node) {
+			if (_isLeaf(node))
+				return;
+			if (!_leftIsLeaf(node))
+				_emptyTree(node->getLeft());
+			if (!_rightIsLeaf(node))
+				_emptyTree(node->getRight());
+			_nalloc.destroy(node);
+			_nalloc.deallocate(node, 1);
+		}
+
+#ifdef BSTTEST
+		void	_inorder_print(rbnode_t* node) const {
+			if (_isLeaf(node))
+				return;
+			_inorder_print(node->getLeft());
+			std::cout << node->key << " ";
+			_inorder_print(node->getRight());
+		}
+
+		void	_inorder_list(rbnode_t* node, std::list<rbnode_t*>& lst) {
+			if (_isLeaf(node))
+				return ;
+			_inorder_list(node->getLeft(), lst);
+			lst.push_back(node);
+			_inorder_list(node->getRight(), lst);
+		}
+#endif
 
 	};
 }
