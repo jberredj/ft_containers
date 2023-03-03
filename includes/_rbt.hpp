@@ -55,6 +55,7 @@ namespace ft {
 		typedef															void(RBT::*rotateFuncP)(rbnode_t*);
 		typedef															bool(RBT::*testFuncP)(rbnode_t*);
 		typedef 														RBNode<T>*(RBNode<T>::*getFuncP)(void);
+		typedef 														void(RBNode<T>::*setFuncP)(RBNode<T>*);
 		allocator_type													_alloc;
 		_Node_alloc														_nalloc;
 		rbnode_t*														_root;
