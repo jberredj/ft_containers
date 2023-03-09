@@ -190,15 +190,16 @@ namespace ft
 
 		void _transplant(rbnode_t *dest, rbnode_t *src)
 		{
-			if (_isRoot(dest->getParent()))
+			if (dest->isRoot())
 				_root = src;
-			else if (_isLeftChild(dest))
-				dest->getParent()->setLeft(src);
+			else if (dest->isLeftChild())
+				dest->parent->left = src;
 			else
-				dest->getParent()->setRight(src);
-			// src->setParent(dest->getParent());
+				dest->parent->right = src;
+			src->parent = dest->parent;
 		}
 
+		// TODO: Refactor this function like _rotateOperation() and _insertFixupOperation()
 		void	_removeFixup(rbnode_t* transplantedNode) {
 			while (!_isRoot(transplantedNode) && transplantedNode->getColor() != ft::BLACK) {
 				if (_isLeftChild(transplantedNode)) {
@@ -260,34 +261,36 @@ namespace ft
 		void _remove(rbnode_t *toDelete)
 		{
 			rbnode_t *nearestGreaterNode = toDelete;
-			nodeColor ogColor = toDelete->getColor();
+			nodeColor ogColor = toDelete->color;
 			rbnode_t *transplantedNode = &_null;
 
-			if (_leftIsLeaf(toDelete))
+			if (toDelete->leftChildIsLeaf())
 			{
-				transplantedNode = toDelete->getRight();
+				transplantedNode = toDelete->right;
 				_transplant(toDelete, transplantedNode);
 			}
-			else if (_rightIsLeaf(toDelete))
+			else if (toDelete->rightChildIsLeaf())
 			{
-				transplantedNode = toDelete->getLeft();
+				transplantedNode = toDelete->left;
 				_transplant(toDelete, transplantedNode);
 			}
 			else
 			{
-				nearestGreaterNode = _min(toDelete->getRight());
-				ogColor = nearestGreaterNode->getColor();
-				transplantedNode = nearestGreaterNode->getRight();
-				if (nearestGreaterNode->getParent() == toDelete)
-					transplantedNode->setParent(nearestGreaterNode);
+				nearestGreaterNode = _min(toDelete->right);
+				ogColor = nearestGreaterNode->color;
+				transplantedNode = nearestGreaterNode->right;
+				if (nearestGreaterNode->getParent == toDelete) // nearestGreaterNode.isChildOf(toDelete) might work TODO: Test this
+					transplantedNode->parent = nearestGreaterNode;
 				else
 				{
 					_transplant(nearestGreaterNode, transplantedNode);
-					nearestGreaterNode->setRight(transplantedNode);
+					nearestGreaterNode->right = toDelete->right;
+					nearestGreaterNode->right->parent = nearestGreaterNode;
 				}
 				_transplant(toDelete, nearestGreaterNode);
-				nearestGreaterNode->setLeft(toDelete->getLeft());
-				nearestGreaterNode->setColor(toDelete->getColor());
+				nearestGreaterNode->left = toDelete->left;
+				nearestGreaterNode->left->parent = nearestGreaterNode;
+				nearestGreaterNode->color = toDelete->color;
 			}
 			if (ogColor == ft::BLACK)
 				_removeFixup(transplantedNode);

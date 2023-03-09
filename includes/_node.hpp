@@ -21,6 +21,8 @@ namespace ft {
 		bool	isLeftChildOf(RBNode& node) const { return node.left == this; }
 		bool	isRightChildOf(RBNode& node) const { return node.right == this; }
 
+		bool	isChildOf(RBNode& node) const { return isLeftChildOf(node) || isRightChildOf(node); }
+
 		// All those functions are redundant, their meant to ease the code readability
 
 		bool	isNotLeftChild(void) const { return parent->left != this;}
@@ -37,7 +39,7 @@ namespace ft {
 		bool	isNotNull(void) const { return !_null; }
 		bool	isLeaf(void) const { return _null; }
 		bool	isNotLeaf(void) const {return !_null; }
-		
+
 		bool	isRoot(void) const { return parent->_null; }
 		bool	isNotRoot(void) const { return !parent->_null; }
 		
