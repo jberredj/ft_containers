@@ -21,7 +21,18 @@ namespace ft {
 		bool	isLeftChildOf(RBNode& node) const { return node.left == this; }
 		bool	isRightChildOf(RBNode& node) const { return node.right == this; }
 
-		// All those functions are redundant, their meant to ease the code readability	
+		// All those functions are redundant, their meant to ease the code readability
+
+		bool	isNotLeftChild(void) const { return parent->left != this;}
+		bool	isNotRightChild(void) const { return parent->right != this;}
+		bool	isNotLeftChildOf(RBNode& node) const { return node.left != this; }
+		bool	isNotRightChildOf(RBNode& node) const { return node.right != this; }
+
+		bool	leftChildIsLeaf(void) const { return left->_null; }
+		bool	rightChildIsLeaf(void) const { return right->_null; }
+		bool	leftChildIsNotLeaf(void) const { return !left->_null; }
+		bool	rightChildIsNotLeaf(void) const { return !right->_null; }
+
 		bool	isNull(void) const { return _null; }
 		bool	isLeaf(void) const { return _null; }
 		bool	isRoot(void) const { return _null; }
