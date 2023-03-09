@@ -286,7 +286,8 @@ namespace ft
 
 		void _remove(T key)
 		{
-			rbnode_t *toDelete = _search(_root, key);
+			_null.key = key;
+			rbnode_t *toDelete = _search(_root);
 			if (toDelete)
 				_remove(toDelete);
 		}
