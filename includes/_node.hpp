@@ -34,8 +34,12 @@ namespace ft {
 		bool	rightChildIsNotLeaf(void) const { return !right->_null; }
 
 		bool	isNull(void) const { return _null; }
+		bool	isNotNull(void) const { return !_null; }
 		bool	isLeaf(void) const { return _null; }
-		bool	isRoot(void) const { return _null; }
+		bool	isNotLeaf(void) const {return !_null; }
+		
+		bool	isRoot(void) const { return parent->_null; }
+		bool	isNotRoot(void) const { return !parent->_null; }
 		
 		bool	isRed(void) const { return !static_cast<bool>(color);}
 		bool	isBlack(void) const { return !isRed(); }
