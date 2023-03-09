@@ -199,60 +199,45 @@ namespace ft
 			src->parent = dest->parent;
 		}
 
-		// TODO: Refactor this function like _rotateOperation() and _insertFixupOperation()
+		rbnode_t*	_removeFixupOperation(rbnode_t* transplantedNode, rotateFuncP rotateFunc1, rotateFuncP rotateFunc2,
+			getFuncP getChild1, getFuncP getChild2)
+		{
+			rbnode_t*	sibling = transplantedNode->getSibling();
+			if (sibling->isRed()) {
+				sibling->color = ft::BLACK;
+				transplantedNode->parent->color = ft::RED;
+				(this->*rotateFunc1)(transplantedNode->parent);
+				sibling = (transplantedNode->parent->*getChild2)(); // transplantedNode->sibling() might work TODO: Test this
+			}
+			if ((sibling->*getChild1)()->isBlack() && (sibling->*getChild2)()->isBlack()) {
+				sibling->color = ft::RED;
+				transplantedNode = transplantedNode->parent;
+			}
+			else {
+				if (sibling->right->isBlack()) {
+					sibling->left->color = ft::BLACK;
+					sibling->color = ft::RED;
+					(this->*rotateFunc2)(sibling);
+					sibling = (transplantedNode->parent->*getChild2)(); // transplantedNode->sibling() might work TODO: Test this
+				}
+				sibling->color = transplantedNode->parent->color;
+				transplantedNode->parent->color = ft::BLACK;
+				(sibling->*getChild2)()->color = ft::BLACK;
+				(this->*rotateFunc1)(transplantedNode->parent);
+				transplantedNode = _root;
+			}
+			return transplantedNode;
+	}
+
 		void	_removeFixup(rbnode_t* transplantedNode) {
-			while (!_isRoot(transplantedNode) && transplantedNode->getColor() != ft::BLACK) {
-				if (_isLeftChild(transplantedNode)) {
-					rbnode_t*	sibling = transplantedNode->getSibling();
-					if (sibling->getColor() == ft::RED) {
-						sibling->setColor(ft::BLACK);
-						transplantedNode->getParent()->setColor(ft::RED);
-						_leftRotate(transplantedNode->getParent());
-						sibling = transplantedNode->getParent()->getRight();
-					}
-					if (sibling->getLeft()->getColor() == ft::BLACK && sibling->getRight()->getColor() == ft::BLACK) {
-						sibling->setColor(ft::RED);
-						transplantedNode = transplantedNode->getParent();
-					}
-					else {
-						if (sibling->getRight()->getColor() == ft::BLACK) {
-							sibling->getLeft()->setColor(ft::BLACK);
-							sibling->setColor(ft::RED);
-							_rightRotate(sibling);
-							sibling = sibling->getParent()->getRight();
-						}
-						sibling->setColor(transplantedNode->getParent()->getColor());
-						transplantedNode->getParent()->setColor(ft::BLACK);
-						sibling->getRight()->setColor(ft::BLACK);
-						_leftRotate(transplantedNode->getParent());
-						transplantedNode = _root;
-					}
+			while (transplantedNode->isNotRoot() && transplantedNode->isBlack()) {
+				if (transplantedNode->isLeftChild()) {
+					transplantedNode = _removeFixupOperation(transplantedNode, &RBT::_leftRotate, &RBT::&_rightRotate,
+						&RBNode<T>::getLeft, &RBNode<T>::getRight);
 				}
 				else {
-					rbnode_t*	sibling = transplantedNode->getSibling();
-					if (sibling->getColor() == ft::RED) {
-						sibling->setColor(ft::BLACK);
-						transplantedNode->getParent()->setColor(ft::RED);
-						_rightRotate(transplantedNode->getParent());
-						sibling = transplantedNode->getParent()->getLeft();
-					}
-					if (sibling->getRight()->getColor() == ft::BLACK && sibling->getLeft()->getColor() == ft::BLACK) {
-						sibling->setColor(ft::RED);
-						transplantedNode = transplantedNode->getParent();
-					}
-					else {
-						if (sibling->getLeft()->getColor() == ft::BLACK) {
-							sibling->getRight()->setColor(ft::BLACK);
-							sibling->setColor(ft::RED);
-							_leftRotate(sibling);
-							sibling = sibling->getParent()->getLeft();
-						}
-						sibling->setColor(transplantedNode->getParent()->getColor());
-						transplantedNode->getParent()->setColor(ft::BLACK);
-						sibling->getLeft()->setColor(ft::BLACK);
-						_RightRotate(transplantedNode->getParent());
-						transplantedNode = _root;
-					}
+					transplantedNode = _removeFixupOperation(transplantedNode, &RBT::_rightRotate, &RBT::&_leftRotate,
+						&RBNode<T>::getRight, &RBNode<T>::getLeft);
 				}
 			}
 			transplantedNode->setColor(ft::BLACK);
