@@ -83,16 +83,24 @@ namespace ft
 			return node;
 		}
 
-		void _rotateOperation(rbnode_t *x, getFuncP getChild1, getFuncP getChild2,
+		// Based on leftRotate implementation, by default Child1 is Left
+		// We use function pointer to avoid duplicate code (it sometimes matter to me, sometimes not)
+		void _rotateOperation(rbnode_t& x, getFuncP getChild1, getFuncP getChild2,
 							  setFuncP setChild1, setFuncP setChild2)
 		{
-			rbnode_t *y = (x->*getChild2)();
-			(x->*setChild2)((y->*getChild1)()); //
-
-			y->setParent(x->getParent());
-
-			_transplant(x, y);
-			(y->*setChild1)(x);
+			rbnode_t& y = (x.*getChild2)();
+			(x.*setChild2)((y.*getChild1)()); //
+			if ((y.*getChild1)()->isNotLeaf())
+				(y.*getChild1)()->parent = &x;
+			y.parent = x.parent;
+			if (x.isRoot())
+				_root = &y;
+			else if (x.isLeftChild())
+				x.parent->left = &y;
+			else
+				x.parent->right = &y;
+			(y.*setChild1)(&x);
+			x->parent = &y;
 		}
 
 		void _leftRotate(rbnode_t *x)
