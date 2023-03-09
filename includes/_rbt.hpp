@@ -32,7 +32,7 @@ namespace ft
 		rbnode_t *search(T key)
 		{
 			_null.key = key;
-			_search(_root, key);
+			_search(_root);
 		}
 
 		void remove(T key)
@@ -69,26 +69,16 @@ namespace ft
 		rbnode_t *_root;
 		rbnode_t _null;
 
-		// Function to ease RBT operation function reading, some could be replaced by '!function()', but that would make the code harder to read
-
-		bool _isLeaf(rbnode_t *node) { return node == &_null; }
-		bool _isNotLeaf(rbnode_t *node) { return !_isLeaf(node); }
-		bool _leftIsLeaf(rbnode_t *node) { return _isLeaf(node->getLeft()); }
-		bool _leftIsNotLeaf(rbnode_t *node) { return !_leftIsLeaf(node); }
-		bool _rightIsLeaf(rbnode_t *node) { return _isLeaf(node->getRight()); }
-		bool _rightIsNotLeaf(rbnode_t *node) { return !_rightIsLeaf(node); }
-		bool _isRoot(rbnode_t *node) { return node == &_null; }
-		bool _isNull(rbnode_t *node) { return node == &_null; }
-		bool _isLeftChild(rbnode_t *node) { return (!_isRoot(node) && (node == node->getParent()->getLeft())); }
-		bool _isRightChild(rbnode_t *node) { return !_isLeftChild(node); }
-
-		rbnode_t *_search(rbnode_t *node, T key) const
+		rbnode_t *_search(rbnode_t* node) const
 		{
-			if (key < node->key)
-				return _search(node->getLeft(), key);
-			else if (key > node->key)
-				return _search(node->getRight(), key);
-			if (_isLeaf(node))
+			while (node->key != _null.key)
+			{
+				if (key < node.key)
+					node = node->left;
+				else
+					node = node->right;
+			}
+			if (node.isNull())
 				return NULL;
 			return node;
 		}
