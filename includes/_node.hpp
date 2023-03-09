@@ -13,8 +13,8 @@ namespace ft {
 		RBNode*		parent;
 
 		RBNode		(): key(T()), color(BLACK), left(this), right(this), parent(this), _null(true) {} // This constructor is only used by the leaf/null terminator
-		RBNode		(T _key, RBNode& nullNode): key(_key), color(RED), left(nullNode), right(nullNode),
-					parent(nullNode), _null(false) {}
+		RBNode		(T _key, RBNode& nullNode): key(_key), color(RED), left(&nullNode), right(&nullNode),
+					parent(&nullNode), _null(false) {}
 
 		bool	isLeftChild(void) const { return parent->left == this; }
 		bool	isRightChild(void) const { return parent->right == this; }
