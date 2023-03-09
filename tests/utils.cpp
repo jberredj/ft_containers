@@ -8,8 +8,8 @@ int timeTest(const char* testName, test_func func, unsigned int seed) {
   try {
     result = (*func)(seed);
   }
-  catch (...) {
-    std::cerr << testName << " failed and thrown an exception " << std::endl;
+  catch (const std::exception &e) {
+    std::cerr << testName << " failed and thrown an exception: " << e.what() << std::endl;
     return -1;
   }
   std::clock_t end_time = std::clock();
