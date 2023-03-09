@@ -61,7 +61,7 @@ namespace ft
 	private:
 		typedef typename Allocator::template rebind<RBNode<T>>::other _Node_alloc; // templated typedef would not work without ::template
 		typedef void (RBT::*rotateFuncP)(rbnode_t *);
-		typedef bool (RBT::*testFuncP)(rbnode_t *);
+		typedef bool (RBNode<T>::*testFuncP)(void);
 		typedef RBNode<T> *(RBNode<T>::*getFuncP)(void);
 		typedef void (RBNode<T>::*setFuncP)(RBNode<T> *);
 		allocator_type _alloc;
@@ -103,54 +103,55 @@ namespace ft
 			x->parent = &y;
 		}
 
-		void _leftRotate(rbnode_t *x)
+		void _leftRotate(rbnode_t& x)
 		{
 			_rotateOperation(x, &RBNode<T>::getLeft, &RBNode<T>::getRight, &RBNode<T>::setLeft, &RBNode<T>::setRight);
 		}
 
-		void _rightRotate(rbnode_t *y)
+		void _rightRotate(rbnode_t& y)
 		{
 			_rotateOperation(y, &RBNode<T>::getRight, &RBNode<T>::getLeft, &RBNode<T>::setRight, &RBNode<T>::setLeft);
 		}
 
-		void _insertFixupOperation(rbnode_t *newNode, testFuncP isXChild,
+		// Same "optimisation" as for RotateOperation
+		rbnode_t* _insertFixupOperation(rbnode_t *newNode, testFuncP isXChild,
 								   rotateFuncP rotateFunc1, rotateFuncP rotateFunc2)
 		{
-			rbnode_t *uncle = newNode->getUncle();
-			if (uncle->getColor() == ft::RED)
+			rbnode_t *uncle = newNode->uncle();
+			if (uncle->isRed())
 			{
-				newNode->getParent()->setColor(ft::BLACK);
-				newNode->setColor(ft::BLACK);
-				newNode->getGrandParent()->setColor(ft::RED);
-				newNode = newNode->getGrandParent();
+				newNode->parent->color = ft::BLACK;
+				newNode->color = ft::BLACK;
+				newNode->grandParent()->color = ft::RED;
+				newNode = newNode->grandParent();
 			}
 			else
 			{
-				if ((this->*isXChild)(newNode))
+				if ((newNode->*isXChild)())
 				{
-					newNode = newNode->getParent();
+					newNode = newNode->parent;
 					(this->*rotateFunc1)(newNode);
 				}
-				newNode->getParent()->setColor(ft::BLACK);
-				newNode->getGrandParent()->setColor(ft::RED);
-				(this->*rotateFunc2)(newNode->getGrandParent());
+				newNode->parent->color = ft::BLACK;
+				newNode->grandParent()->color = ft::RED;
+				(this->*rotateFunc2)(newNode->grandParent());
 			}
-		}
-
-		rbnode_t *_insertFixup(rbnode_t *newNode)
-		{
-			while (newNode->getParent()->getColor() == ft::RED)
-			{
-				if (_isLeftChild(newNode->getParent()))
-					_insertFixupOperation(newNode, &RBT::_isRightChild, &RBT::_leftRotate, &RBT::_rightRotate);
-				else
-					_insertFixupOperation(newNode, &RBT::_isLeftChild, &RBT::_rightRotate, &RBT::_leftRotate);
-			}
-			_root->setColor(ft::BLACK);
 			return newNode;
 		}
 
-		rbnode_t *newRBNode(T Key)
+		void _insertFixup(rbnode_t *newNode)
+		{
+			while (newNode->parent->isRed())
+			{
+				if (newNode->parent->isLeftChild())
+					newNode = _insertFixupOperation(newNode, &RBT::_isRightChild, &RBT::_leftRotate, &RBT::_rightRotate);
+				else
+					newNode = _insertFixupOperation(newNode, &RBT::_isLeftChild, &RBT::_rightRotate, &RBT::_leftRotate);
+			}
+			_root->setColor(ft::BLACK);
+		}
+
+		rbnode_t* newRBNode(T Key)
 		{
 			rbnode_t tmp(Key, &_null);
 			rbnode_t *newAddr = NULL;
@@ -159,28 +160,32 @@ namespace ft
 			return newAddr;
 		}
 
-		rbnode_t *_insert(T key)
+		// newNode is alloc after the search here, intro to algo provide a node to insert to this function instead of a 
+		// key value. I did this change to prevent useless alloc/destroy.
+		rbnode_t& _insert(T key)
 		{
-			rbnode_t *parent = &_null;
-			rbnode_t *crawler = _root;
-			while (_isNotLeaf(crawler))
+			rbnode_t*	parent = &_null;
+			rbnode_t*	crawler = _root;
+			while (crawler->isNotLeaf())
 			{
 				parent = crawler;
 				if (key < crawler->key)
-					crawler = crawler->getLeft();
+					crawler = crawler->left;
 				else if (key > crawler->key)
-					crawler = crawler->getRight();
+					crawler = crawler->left;
 				else
-					return crawler;
+					return crawler; // This return is not in Intro to Algo, it prevent duplicate insert.
 			}
-			rbnode_t *newNode = newRBNode(key);
-			if (_isNull(parent))
+			rbnode_t* newNode = newRBNode(key);
+			newNode->parent = parent;
+			if (parent->isNull())
 				_root = newNode;
 			else if (key < parent->key)
-				parent->setLeft(newNode);
+				parent->left = newNode;
 			else
-				parent->setRight(newNode);
-			return _insertFixup(newNode);
+				parent->right = newNode;
+			_insertFixup(newNode);
+			return newNode;
 		}
 
 		void _transplant(rbnode_t *dest, rbnode_t *src)
