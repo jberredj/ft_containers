@@ -5,12 +5,13 @@
 #include <iostream>
 #include <memory>
 #ifdef BSTTEST
+#include <exception>
 #include <list>
 #endif
 
 namespace ft
 {
-	template <typename T, class Compare = std::less<T>, class Allocator = std::allocator<RBNode<T>>>
+	template <typename T, class Compare = std::less<T>, class Allocator = std::allocator<RBNode<T> > >
 	class RBT
 	{
 	public:
@@ -24,20 +25,20 @@ namespace ft
 			_emptyTree(_root);
 		}
 
-		rbnode_t *insert(T key)
+		rbnode_t& insert(T key)
 		{
 			return _insert(key);
 		}
 
-		rbnode_t *search(T key)
+		rbnode_t* search(T key)
 		{
 			_null.key = key;
-			_search(_root);
+			return _search(_root);
 		}
 
 		void remove(T key)
 		{
-			_root = _remove(_root, key);
+			_remove(_root, key);
 		}
 
 		void emptyTree(void)
@@ -56,13 +57,14 @@ namespace ft
 			_inorder_list(_root, result);
 			return result;
 		}
+
 #endif
 
 	private:
-		typedef typename Allocator::template rebind<RBNode<T>>::other _Node_alloc; // templated typedef would not work without ::template
-		typedef void (RBT::*rotateFuncP)(rbnode_t *);
-		typedef bool (RBNode<T>::*testFuncP)(void);
-		typedef RBNode<T> *(RBNode<T>::*getFuncP)(void);
+		typedef typename Allocator::template rebind<RBNode<T> >::other _Node_alloc; // templated typedef would not work without ::template
+		typedef void (RBT::*rotateFuncP)(rbnode_t &);
+		typedef bool (RBNode<T>::*testFuncP)(void) const;
+		typedef RBNode<T> *(RBNode<T>::*getFuncP)(void) const;
 		typedef void (RBNode<T>::*setFuncP)(RBNode<T> *);
 		allocator_type _alloc;
 		_Node_alloc _nalloc;
@@ -73,12 +75,12 @@ namespace ft
 		{
 			while (node->key != _null.key)
 			{
-				if (key < node.key)
+				if (_null.key < node->key)
 					node = node->left;
 				else
 					node = node->right;
 			}
-			if (node.isNull())
+			if (node->isNull())
 				return NULL;
 			return node;
 		}
@@ -88,7 +90,7 @@ namespace ft
 		void _rotateOperation(rbnode_t& x, getFuncP getChild1, getFuncP getChild2,
 							  setFuncP setChild1, setFuncP setChild2)
 		{
-			rbnode_t& y = (x.*getChild2)();
+			rbnode_t& y = *(x.*getChild2)();
 			(x.*setChild2)((y.*getChild1)()); //
 			if ((y.*getChild1)()->isNotLeaf())
 				(y.*getChild1)()->parent = &x;
@@ -98,9 +100,9 @@ namespace ft
 			else if (x.isLeftChild())
 				x.parent->left = &y;
 			else
-				x.parent->right = &y;
+				x.parent->right =&y;
 			(y.*setChild1)(&x);
-			x->parent = &y;
+			x.parent = &y;
 		}
 
 		void _leftRotate(rbnode_t& x)
@@ -121,7 +123,7 @@ namespace ft
 			if (uncle->isRed())
 			{
 				newNode->parent->color = ft::BLACK;
-				newNode->color = ft::BLACK;
+				uncle->color = ft::BLACK;
 				newNode->grandParent()->color = ft::RED;
 				newNode = newNode->grandParent();
 			}
@@ -130,11 +132,11 @@ namespace ft
 				if ((newNode->*isXChild)())
 				{
 					newNode = newNode->parent;
-					(this->*rotateFunc1)(newNode);
+					(this->*rotateFunc1)(*newNode);
 				}
 				newNode->parent->color = ft::BLACK;
 				newNode->grandParent()->color = ft::RED;
-				(this->*rotateFunc2)(newNode->grandParent());
+				(this->*rotateFunc2)(*newNode->grandParent());
 			}
 			return newNode;
 		}
@@ -144,16 +146,16 @@ namespace ft
 			while (newNode->parent->isRed())
 			{
 				if (newNode->parent->isLeftChild())
-					newNode = _insertFixupOperation(newNode, &RBT::_isRightChild, &RBT::_leftRotate, &RBT::_rightRotate);
+					newNode = _insertFixupOperation(newNode, &RBNode<T>::isRightChild, &RBT::_leftRotate, &RBT::_rightRotate);
 				else
-					newNode = _insertFixupOperation(newNode, &RBT::_isLeftChild, &RBT::_rightRotate, &RBT::_leftRotate);
+					newNode = _insertFixupOperation(newNode, &RBNode<T>::isLeftChild, &RBT::_rightRotate, &RBT::_leftRotate);
 			}
-			_root->setColor(ft::BLACK);
+			_root->color = ft::BLACK;
 		}
 
 		rbnode_t* newRBNode(T Key)
 		{
-			rbnode_t tmp(Key, &_null);
+			rbnode_t tmp(Key, _null);
 			rbnode_t *newAddr = NULL;
 			newAddr = _nalloc.allocate(1);
 			_nalloc.construct(newAddr, tmp);
@@ -172,9 +174,9 @@ namespace ft
 				if (key < crawler->key)
 					crawler = crawler->left;
 				else if (key > crawler->key)
-					crawler = crawler->left;
+					crawler = crawler->right;
 				else
-					return crawler; // This return is not in Intro to Algo, it prevent duplicate insert.
+					return *crawler; // This return is not in Intro to Algo, it prevent duplicate insert.
 			}
 			rbnode_t* newNode = newRBNode(key);
 			newNode->parent = parent;
@@ -185,7 +187,7 @@ namespace ft
 			else
 				parent->right = newNode;
 			_insertFixup(newNode);
-			return newNode;
+			return *newNode;
 		}
 
 		void _transplant(rbnode_t *dest, rbnode_t *src)
@@ -232,11 +234,11 @@ namespace ft
 		void	_removeFixup(rbnode_t* transplantedNode) {
 			while (transplantedNode->isNotRoot() && transplantedNode->isBlack()) {
 				if (transplantedNode->isLeftChild()) {
-					transplantedNode = _removeFixupOperation(transplantedNode, &RBT::_leftRotate, &RBT::&_rightRotate,
+					transplantedNode = _removeFixupOperation(transplantedNode, &RBT::_leftRotate, &RBT::_rightRotate,
 						&RBNode<T>::getLeft, &RBNode<T>::getRight);
 				}
 				else {
-					transplantedNode = _removeFixupOperation(transplantedNode, &RBT::_rightRotate, &RBT::&_leftRotate,
+					transplantedNode = _removeFixupOperation(transplantedNode, &RBT::_rightRotate, &RBT::_leftRotate,
 						&RBNode<T>::getRight, &RBNode<T>::getLeft);
 				}
 			}
@@ -294,26 +296,26 @@ namespace ft
 
 		rbnode_t *_min(rbnode_t *node) const
 		{
-			if (!_leftIsLeaf(node))
-				return _min(node->getLeft());
+			if (node->leftChildIsNotLeaf())
+				return _min(node->left);
 			return node;
 		}
 
 		rbnode_t *_max(rbnode_t *node) const
 		{
-			if (!_rightIsLeaf(node))
-				return _min(node->getRight());
+			if (node->rightChildIsNotLeaf())
+				return _min(node->right);
 			return node;
 		}
 
 		void _emptyTree(rbnode_t *node)
 		{
-			if (_isLeaf(node))
+			if (node->isLeaf())
 				return;
-			if (!_leftIsLeaf(node))
-				_emptyTree(node->getLeft());
-			if (!_rightIsLeaf(node))
-				_emptyTree(node->getRight());
+			if (node->leftChildIsNotLeaf())
+				_emptyTree(node->left);
+			if (node->rightChildIsNotLeaf())
+				_emptyTree(node->right);
 			_nalloc.destroy(node);
 			_nalloc.deallocate(node, 1);
 		}
@@ -321,21 +323,23 @@ namespace ft
 #ifdef BSTTEST
 		void _inorder_print(rbnode_t *node) const
 		{
-			if (_isLeaf(node))
+			if (node->isLeaf())
 				return;
-			_inorder_print(node->getLeft());
-			std::cout << node->key << " ";
-			_inorder_print(node->getRight());
+			_inorder_print(node->left);
+			std::cout << node->key << (static_cast<bool>(node->color) ? "B" : "R") << " ";
+			_inorder_print(node->right);
 		}
 
 		void _inorder_list(rbnode_t *node, std::list<rbnode_t *> &lst)
 		{
-			if (_isLeaf(node))
+			if (node->isLeaf())
 				return;
-			_inorder_list(node->getLeft(), lst);
+			_inorder_list(node->left, lst);
 			lst.push_back(node);
-			_inorder_list(node->getRight(), lst);
+			_inorder_list(node->right, lst);
 		}
+
+
 #endif
 	};
 }
