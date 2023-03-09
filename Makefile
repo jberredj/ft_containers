@@ -1,7 +1,7 @@
 NAME			=	ft_containers
 
 CXX				=	clang++
-OPTI			=	-O3
+OPTI			=	# -O3
 CXXFLAGS		=	-Wall -Werror -Wextra -std=c++98 $(OPTI) -g
 LDFLAGS			=	
 
@@ -17,11 +17,11 @@ LIBS			=
 ##								Source files								 ##
 ###############################################################################
 
-RBT					=	rbt.cpp
-RBT_SRCS			=   $(addprefix $(SRC_DIR)/, $(RBT))
-RBT_OBJS			=   $(addprefix $(OBJ_DIR)/, $(subst /,., $(RBT:.cpp=.o)))
+RBT					=	rbt_tests.cpp
+RBT_SRCS			=   $(addprefix $(SRC_DIR)/rbt/, $(RBT))
+RBT_OBJS			=   $(addprefix $(OBJ_DIR)/rbt., $(subst /,., $(RBT:.cpp=.o)))
 
-UTILS				=	utils.cpp
+UTILS				=	randomValue.cpp MyClass.cpp# utils.cpp 
 UTILS_SRCS			=   $(addprefix $(SRC_DIR)/, $(UTILS))
 UTILS_OBJS			=   $(addprefix $(OBJ_DIR)/, $(subst /,., $(UTILS:.cpp=.o)))
 
