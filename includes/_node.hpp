@@ -3,56 +3,50 @@
 
 namespace ft {
 	enum nodeColor {RED = false, BLACK = true};
-
 	template <class T>
 	class RBNode {
 	public:
 		T			key;
+		nodeColor	color;
+		RBNode*		left;
+		RBNode*		right;
+		RBNode*		parent;
 
-		RBNode		():	key(T()), _color(BLACK), _left(this), _right(this), _parent(this), _isNotNull(false) {} // This constructor is only used by the leaf/null terminator
+		RBNode		(): key(T()), color(BLACK), left(this), right(this), parent(this), _null(true) {} // This constructor is only used by the leaf/null terminator
+		RBNode		(T _key, RBNode& nullNode): key(_key), color(RED), left(nullNode), right(nullNode),
+					parent(nullNode), _null(false) {}
 
-		RBNode		(T _key, RBNode* terminator): key(_key), _color(RED), _left(terminator), _right(terminator),
-					_parent(terminator), _isNotNull(true) {}
+		bool	isLeftChild(void) const { return parent->left == this; }
+		bool	isRightChild(void) const { return parent->right == this; }
+		bool	isLeftChildOf(RBNode& node) const { return node.left == this; }
+		bool	isRightChildOf(RBNode& node) const { return node.right == this; }
 
-		void	setColor(nodeColor newColor) {_color = newColor;}
-		void	recolor(void) {_color = static_cast<nodeColor>(!_color);}
-		void	setParent(RBNode *node) {_parent = node;}
-		void	setLeft(RBNode *node) {
-			_left = node;
-			if (node->_isNotNull)
-				node->setParent(this);
-		}
-		void	setRight(RBNode *node) {
-			_right = node;
-			if (node->_isNotNull)
-				node->setParent(this);
-		}
-
-
-		void	setNull(bool value) {
-			_isNotNull = !value;
-			_color = static_cast<nodeColor>(value);
-		}
-
-		RBNode*		getLeft(void) {return _left;}
-		RBNode*		getRight(void) {return _right;}
-		RBNode*		getParent(void)	{return _parent;}
-		RBNode*		getSibling(void) {
-			if (_parent->_left == this)
-				return _parent->_right;
-			return _parent->_left;
-		}
-		RBNode*		getUncle(void) {return _parent->getSibling();}
-		RBNode*		getGrandParent(void) {return _parent->_parent;}
+		// All those functions are redundant, their meant to ease the code readability	
+		bool	isNull(void) const { return _null; }
+		bool	isLeaf(void) const { return _null; }
+		bool	isRoot(void) const { return _null; }
 		
-		nodeColor	getColor(void) {return _color;}
+		bool	isRed(void) const { return !static_cast<bool>(color);}
+		bool	isBlack(void) const { return !isRed(); }
+		bool	isNotRed(void) const { return !isRed(); }
+		bool	isNotBlack(void) const { return isRed(); }
+
+		RBNode*	grandParent(void) const { return parent->parent; }
+		RBNode*	sibling(void) const {
+			if (isLeftChild())
+				return parent->right;
+			return parent->left;	
+		}
+		RBNode*	uncle(void) const { return parent->sibling(); }
+
+		// left and right are public, those functions are used when function pointers are
+		void		setLeft(RBNode *node) { left = node; }
+		void		setRight(RBNode *node) { right = node; }
+		RBNode*		getLeft(void) const {return left;}
+		RBNode*		getRight(void) const {return right;}
 
 	private:
-		nodeColor	_color;
-		RBNode*		_left;
-		RBNode*		_right;
-		RBNode*		_parent;
-		bool		_isNotNull;
+		bool	_null;
 	};
 
 	template <class T>
