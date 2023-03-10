@@ -4,10 +4,6 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
-#ifdef BSTTEST
-#include <exception>
-#include <list>
-#endif
 
 namespace ft
 {
@@ -19,7 +15,7 @@ namespace ft
 		typedef Allocator allocator_type;
 		typedef RBNode<value_type> rbnode_t;
 
-		RBT() : _root(&_null), _null(RBNode<T>()) {}
+		RBT() : _root(&_null), _null(RBNode<T>()), _size(0) {}
 		~RBT()
 		{
 			_emptyTree(_root);
@@ -38,26 +34,23 @@ namespace ft
 
 		void remove(T key)
 		{
-			_remove(_root, key);
+			_remove(key);
 		}
 
 		void emptyTree(void)
 		{
 			_emptyTree(_root);
+			_root = &_null;
 		}
+
+		size_t	size(void) const { return _size; }
+
 #ifdef BSTTEST
-		void inorder_print(void)
-		{
-			_inorder_print(_root);
-		}
+		rbnode_t*	getRoot() { return _root; }
 
-		std::list<rbnode_t *> inorder_list(void)
-		{
-			std::list<rbnode_t *> result;
-			_inorder_list(_root, result);
-			return result;
+		void	validRBT(void) {
+			_validRBT(*_root);
 		}
-
 #endif
 
 	private:
@@ -70,6 +63,7 @@ namespace ft
 		_Node_alloc _nalloc;
 		rbnode_t *_root;
 		rbnode_t _null;
+		size_t	_size;
 
 		rbnode_t *_search(rbnode_t* node) const
 		{
@@ -187,6 +181,7 @@ namespace ft
 			else
 				parent->right = newNode;
 			_insertFixup(newNode);
+			_size++;
 			return *newNode;
 		}
 
@@ -204,11 +199,11 @@ namespace ft
 		rbnode_t*	_removeFixupOperation(rbnode_t* transplantedNode, rotateFuncP rotateFunc1, rotateFuncP rotateFunc2,
 			getFuncP getChild1, getFuncP getChild2)
 		{
-			rbnode_t*	sibling = transplantedNode->getSibling();
+			rbnode_t*	sibling = transplantedNode->sibling();
 			if (sibling->isRed()) {
 				sibling->color = ft::BLACK;
 				transplantedNode->parent->color = ft::RED;
-				(this->*rotateFunc1)(transplantedNode->parent);
+				(this->*rotateFunc1)(*transplantedNode->parent);
 				sibling = (transplantedNode->parent->*getChild2)(); // transplantedNode->sibling() might work TODO: Test this
 			}
 			if ((sibling->*getChild1)()->isBlack() && (sibling->*getChild2)()->isBlack()) {
@@ -219,13 +214,13 @@ namespace ft
 				if (sibling->right->isBlack()) {
 					sibling->left->color = ft::BLACK;
 					sibling->color = ft::RED;
-					(this->*rotateFunc2)(sibling);
+					(this->*rotateFunc2)(*sibling);
 					sibling = (transplantedNode->parent->*getChild2)(); // transplantedNode->sibling() might work TODO: Test this
 				}
 				sibling->color = transplantedNode->parent->color;
 				transplantedNode->parent->color = ft::BLACK;
 				(sibling->*getChild2)()->color = ft::BLACK;
-				(this->*rotateFunc1)(transplantedNode->parent);
+				(this->*rotateFunc1)(*transplantedNode->parent);
 				transplantedNode = _root;
 			}
 			return transplantedNode;
@@ -242,7 +237,7 @@ namespace ft
 						&RBNode<T>::getRight, &RBNode<T>::getLeft);
 				}
 			}
-			transplantedNode->setColor(ft::BLACK);
+			transplantedNode->color = ft::BLACK;
 		}
 
 		void _remove(rbnode_t *toDelete)
@@ -266,7 +261,7 @@ namespace ft
 				nearestGreaterNode = _min(toDelete->right);
 				ogColor = nearestGreaterNode->color;
 				transplantedNode = nearestGreaterNode->right;
-				if (nearestGreaterNode->getParent == toDelete) // nearestGreaterNode.isChildOf(toDelete) might work TODO: Test this
+				if (nearestGreaterNode->parent == toDelete) // nearestGreaterNode.isChildOf(toDelete) might work TODO: Test this
 					transplantedNode->parent = nearestGreaterNode;
 				else
 				{
@@ -283,7 +278,8 @@ namespace ft
 				_removeFixup(transplantedNode);
 			_nalloc.destroy(toDelete);
 			_nalloc.deallocate(toDelete, 1);
-			_null.setParent(&_null);
+			_size--;
+			_null.parent = &_null;
 		}
 
 		void _remove(T key)
@@ -292,6 +288,8 @@ namespace ft
 			rbnode_t *toDelete = _search(_root);
 			if (toDelete)
 				_remove(toDelete);
+			if (_size == 0)
+				_root = &_null;
 		}
 
 		rbnode_t *_min(rbnode_t *node) const
@@ -318,29 +316,8 @@ namespace ft
 				_emptyTree(node->right);
 			_nalloc.destroy(node);
 			_nalloc.deallocate(node, 1);
+			_size--;
 		}
-
-#ifdef BSTTEST
-		void _inorder_print(rbnode_t *node) const
-		{
-			if (node->isLeaf())
-				return;
-			_inorder_print(node->left);
-			std::cout << node->key << (static_cast<bool>(node->color) ? "B" : "R") << " ";
-			_inorder_print(node->right);
-		}
-
-		void _inorder_list(rbnode_t *node, std::list<rbnode_t *> &lst)
-		{
-			if (node->isLeaf())
-				return;
-			_inorder_list(node->left, lst);
-			lst.push_back(node);
-			_inorder_list(node->right, lst);
-		}
-
-
-#endif
 	};
 }
 
