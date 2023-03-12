@@ -119,6 +119,8 @@ namespace ft
 		
 		size_type	size(void) const {return _tree.size()}
 		size_type	max_size(void) const {return _tree.max_size()}
+
+		void clear(void) { _tree.emptyTree(); }
 	};
 
 }
