@@ -124,10 +124,9 @@ namespace ft
 
 		rbnode_t*	getNull(void) { return _null; }
 		rbnode_t*	getNull(void) const { return _null; }
-
-#ifdef BSTTEST
 		rbnode_t*	getRoot() { return _root; }
 
+#ifdef BSTTEST
 		void	validRBT(void) {
 			_validRBT(*_root);
 		}

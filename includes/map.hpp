@@ -114,6 +114,11 @@ namespace ft
 		{
 			return ((insert(ft::make_pair(x, T()))).first)->second;
 		}
+
+		bool empty(void) const {return _tree.getRoot() == _tree.getNull();}
+		
+		size_type	size(void) const {return _tree.size()}
+		size_type	max_size(void) const {return _tree.max_size()}
 	};
 
 }
