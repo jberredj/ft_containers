@@ -13,12 +13,35 @@ namespace ft
 	public:
 		typedef T value_type;
 		typedef Allocator allocator_type;
+		typedef Compare		key_compare;
 		typedef RBNode<value_type> rbnode_t;
+	private:
+		typedef typename Allocator::template rebind<RBNode<T> >::other _Node_alloc; // templated typedef would not work without ::template
+		typedef void (RBT::*rotateFuncP)(rbnode_t &);
+		typedef bool (RBNode<T>::*testFuncP)(void) const;
+		typedef RBNode<T> *(RBNode<T>::*getFuncP)(void) const;
+		typedef void (RBNode<T>::*setFuncP)(RBNode<T> *);
+		allocator_type _alloc;
+		_Node_alloc _nalloc;
+		rbnode_t* _null;
+		rbnode_t* _root;
+		size_t	_size;
+	public:
 
-		RBT() : _root(&_null), _null(RBNode<T>()), _size(0) {}
+		RBT() : _size(0)
+		{
+			rbnode_t tmp;
+			rbnode_t *newAddr = NULL;
+			newAddr = _nalloc.allocate(1);
+			_nalloc.construct(newAddr, tmp);
+			_null = newAddr;
+			_root = _null;
+		}
 		~RBT()
 		{
 			_emptyTree(_root);
+			_nalloc.destroy(_null);
+			_nalloc.deallocate(_null, 1);
 		}
 
 		rbnode_t& insert(T key)
@@ -28,7 +51,7 @@ namespace ft
 
 		rbnode_t* search(T key)
 		{
-			_null.key = key;
+			_null->key = key;
 			return _search(_root);
 		}
 
@@ -40,7 +63,7 @@ namespace ft
 		void emptyTree(void)
 		{
 			_emptyTree(_root);
-			_root = &_null;
+			_root = _null;
 		}
 
 		size_t	size(void) const { return _size; }
@@ -54,22 +77,12 @@ namespace ft
 #endif
 
 	private:
-		typedef typename Allocator::template rebind<RBNode<T> >::other _Node_alloc; // templated typedef would not work without ::template
-		typedef void (RBT::*rotateFuncP)(rbnode_t &);
-		typedef bool (RBNode<T>::*testFuncP)(void) const;
-		typedef RBNode<T> *(RBNode<T>::*getFuncP)(void) const;
-		typedef void (RBNode<T>::*setFuncP)(RBNode<T> *);
-		allocator_type _alloc;
-		_Node_alloc _nalloc;
-		rbnode_t *_root;
-		rbnode_t _null;
-		size_t	_size;
 
 		rbnode_t *_search(rbnode_t* node) const
 		{
-			while (node->key != _null.key)
+			while (node->key != _null->key)
 			{
-				if (_null.key < node->key)
+				if (_null->key < node->key)
 					node = node->left;
 				else
 					node = node->right;
@@ -149,7 +162,7 @@ namespace ft
 
 		rbnode_t* newRBNode(T Key)
 		{
-			rbnode_t tmp(Key, _null);
+			rbnode_t tmp(Key, *_null);
 			rbnode_t *newAddr = NULL;
 			newAddr = _nalloc.allocate(1);
 			_nalloc.construct(newAddr, tmp);
@@ -160,7 +173,7 @@ namespace ft
 		// key value. I did this change to prevent useless alloc/destroy.
 		rbnode_t& _insert(T key)
 		{
-			rbnode_t*	parent = &_null;
+			rbnode_t*	parent = _null;
 			rbnode_t*	crawler = _root;
 			while (crawler->isNotLeaf())
 			{
@@ -244,7 +257,7 @@ namespace ft
 		{
 			rbnode_t *nearestGreaterNode = toDelete;
 			nodeColor ogColor = toDelete->color;
-			rbnode_t *transplantedNode = &_null;
+			rbnode_t *transplantedNode = _null;
 
 			if (toDelete->leftChildIsLeaf())
 			{
@@ -258,7 +271,7 @@ namespace ft
 			}
 			else
 			{
-				nearestGreaterNode = _min(toDelete->right);
+				nearestGreaterNode = toDelete->right->min();
 				ogColor = nearestGreaterNode->color;
 				transplantedNode = nearestGreaterNode->right;
 				if (nearestGreaterNode->parent == toDelete) // nearestGreaterNode.isChildOf(toDelete) might work TODO: Test this
@@ -279,31 +292,17 @@ namespace ft
 			_nalloc.destroy(toDelete);
 			_nalloc.deallocate(toDelete, 1);
 			_size--;
-			_null.parent = &_null;
+			_null->parent = _null;
 		}
 
 		void _remove(T key)
 		{
-			_null.key = key;
+			_null->key = key;
 			rbnode_t *toDelete = _search(_root);
 			if (toDelete)
 				_remove(toDelete);
 			if (_size == 0)
-				_root = &_null;
-		}
-
-		rbnode_t *_min(rbnode_t *node) const
-		{
-			if (node->leftChildIsNotLeaf())
-				return _min(node->left);
-			return node;
-		}
-
-		rbnode_t *_max(rbnode_t *node) const
-		{
-			if (node->rightChildIsNotLeaf())
-				return _min(node->right);
-			return node;
+				_root = _null;
 		}
 
 		void _emptyTree(rbnode_t *node)

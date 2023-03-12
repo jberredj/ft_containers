@@ -6,6 +6,7 @@ namespace ft {
 	template <class T>
 	class RBNode {
 	public:
+		typedef T	value_type;	
 		T			key;
 		nodeColor	color;
 		RBNode*		left;
@@ -61,6 +62,48 @@ namespace ft {
 		void		setRight(RBNode *node) { right = node; }
 		RBNode*		getLeft(void) const {return left;}
 		RBNode*		getRight(void) const {return right;}
+
+		RBNode*	min(void)
+		{
+			RBNode*	node = this;
+			while (node->leftChildIsNotLeaf())
+				node = node->left;
+			return node;
+		}
+
+		RBNode*	max(void)
+		{
+			RBNode*	node = this;
+			while (node->rightChildIsNotLeaf())
+				node = node->right;
+			return node;
+		}
+
+		RBNode*	successor() {
+			if (rightChildIsNotLeaf())
+				return right->min();
+			RBNode*	y = parent;
+			RBNode*	x = this;
+			while (y->isNotNull() && x == y->right)
+			{
+				x = y;
+				y = y->parent;
+			}
+			return y;
+		}
+
+		RBNode*	predecessor() {
+			if (leftChildIsNotLeaf())
+				return left->max();
+			RBNode*	y = parent;
+			RBNode*	x = this;
+			while (y->isNotNull() && x == y->left)
+			{
+				x = y;
+				y = y->parent;
+			}
+			return y;
+		}
 
 	private:
 		bool	_null;
