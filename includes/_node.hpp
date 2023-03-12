@@ -78,15 +78,18 @@ namespace ft
 			return node;
 		}
 
-		RBNode *max(void)
+		RBNode*	min(void) const { return min(); }
+
+		RBNode*	max(void)
 		{
 			RBNode *node = this;
 			while (node->rightChildIsNotLeaf())
 				node = node->right;
 			return node;
 		}
+		RBNode*	max(void) const { return max(); }
 
-		RBNode *successor()
+		RBNode*	successor()
 		{
 			if (rightChildIsNotLeaf())
 				return right->min();
@@ -99,8 +102,9 @@ namespace ft
 			}
 			return y;
 		}
+		const RBNode*	successor(void) const { return successor(); }
 
-		RBNode *predecessor()
+		RBNode*	predecessor()
 		{
 			if (leftChildIsNotLeaf())
 				return left->max();
@@ -113,6 +117,7 @@ namespace ft
 			}
 			return y;
 		}
+		const RBNode*	predecessor(void) const { return predecessor(); }
 
 	private:
 		bool _null;
