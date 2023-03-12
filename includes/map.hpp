@@ -27,7 +27,7 @@ namespace ft
 		typedef std::ptrdiff_t difference_type;
 		typedef Compare key_compare;
 		typedef Allocator allocator_type;
-		typedef value_type& reference;
+		typedef value_type &reference;
 		typedef const reference const_reference;
 		typedef typename Allocator::pointer pointer;
 		typedef typename Allocator::const_pointer pointer;
@@ -89,34 +89,33 @@ namespace ft
 			return *this;
 		}
 
-		allocator_type get_allocator() const {return _alloc;}
+		allocator_type get_allocator() const { return _alloc; }
 
-		iterator begin() {return iterator(_tree.min());}
-		const_iterator begin() const {return const_iterator(_tree.min());}
-		iterator end() {return iterator(_tree.getNull());}
-		const_iterator end() const {return const_iterator(_tree.getNull());}
-		reverse_iterator rbegin() {return reverse_iterator(end());}
-		const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
-		reverse_iterator rend() {return reverse_iterator(begin());}
-		const_reverse_iterator rend() const {return const_reverse_iterator(begin());}
+		iterator begin() { return iterator(_tree.min()); }
+		const_iterator begin() const { return const_iterator(_tree.min()); }
+		iterator end() { return iterator(_tree.getNull()); }
+		const_iterator end() const { return const_iterator(_tree.getNull()); }
+		reverse_iterator rbegin() { return reverse_iterator(end()); }
+		const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
+		reverse_iterator rend() { return reverse_iterator(begin()); }
+		const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
 
-		T& at(const Key& key)
+		T &at(const Key &key)
 		{
-			iterator    it = find(key); // TODO: Implement find
+			iterator it = find(key); // TODO: Implement find
 			if (find(key) == end())
-				throw::std::out_of_range("ft::map::at");
+				throw ::std::out_of_range("ft::map::at");
 			return (find(key)->second);
 		}
 
-		const T& at( const Key& key ) const { return at(key); }
+		const T &at(const Key &key) const { return at(key); }
 
-		T& operator[](const key_type& x)
+		T &operator[](const key_type &x)
 		{
 			return ((insert(ft::make_pair(x, T()))).first)->second;
 		}
-
 	};
-	
+
 }
 
 #endif
