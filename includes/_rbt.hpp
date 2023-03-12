@@ -1,6 +1,7 @@
 #ifndef _RBT_HPP
 #define _RBT_HPP
 #include "_node.hpp"
+#include "_map_iterator.hpp"
 #include <cstddef>
 #include <iostream>
 #include <memory>
@@ -15,6 +16,7 @@ namespace ft
 		typedef Allocator allocator_type;
 		typedef Compare		key_compare;
 		typedef RBNode<value_type> rbnode_t;
+		typedef mapIterator<rbnode_t> iterator;
 	private:
 		typedef typename Allocator::template rebind<RBNode<T> >::other _Node_alloc; // templated typedef would not work without ::template
 		typedef void (RBT::*rotateFuncP)(rbnode_t &);
@@ -23,20 +25,65 @@ namespace ft
 		typedef void (RBNode<T>::*setFuncP)(RBNode<T> *);
 		allocator_type _alloc;
 		_Node_alloc _nalloc;
+		key_compare _key_comp;
 		rbnode_t* _null;
 		rbnode_t* _root;
 		size_t	_size;
 	public:
 
-		RBT() : _size(0)
+		RBT(const allocator_type& alloc = allocator_type(), const key_compare& key_comp = key_compare())
+			: _alloc(alloc), _nalloc(alloc), _key_comp(key_comp), _size(0)
 		{
 			rbnode_t tmp;
-			rbnode_t *newAddr = NULL;
-			newAddr = _nalloc.allocate(1);
-			_nalloc.construct(newAddr, tmp);
-			_null = newAddr;
+			_null = _nalloc.allocate(1);
+			_nalloc.construct(_null, tmp);
 			_root = _null;
 		}
+		RBT(const RBT& src) : _alloc(src._alloc), _nalloc(src._nalloc), _key_comp(src._key_comp), _size(0)
+		{
+			iterator it = src.min();
+			iterator end = src._null;
+			rbnode_t tmp;
+
+			_null = _nalloc.allocate(1);
+			_nalloc.construct(_null, tmp);
+			_root = _null;
+
+			while (it != end)
+			{
+				_insert(*it);
+				++it;
+			}
+		}
+
+		RBT&	operator=(const RBT& src) {
+			iterator it = src.min();
+			iterator end = src._null;
+
+			emptyTree();			
+
+			while (it != end)
+			{
+				_insert(*it);
+				++it;
+			}
+		}
+
+		void	swap(RBT& rhs) {
+			rbnode_t*	tmp = _null;
+			_null = rhs.null;
+			rhs._null = tmp;
+
+			tmp = _root;
+			_root = rhs._root;
+			rhs._root = tmp;
+
+			size_t	tmp_size = _size;
+			_size = rhs._size;
+			rhs._size = tmp_size;
+		}
+
+
 		~RBT()
 		{
 			_emptyTree(_root);
@@ -66,7 +113,13 @@ namespace ft
 			_root = _null;
 		}
 
+		rbnode_t*	min() { return _root->min(); }
+		rbnode_t*	min() const { return min(); }
+		rbnode_t*	max() { return _root->max(); }
+		rbnode_t*	max() const { return max(); }
+
 		size_t	size(void) const { return _size; }
+		size_t	max_size(void) const { return _nalloc.max_size(); }
 
 #ifdef BSTTEST
 		rbnode_t*	getRoot() { return _root; }
@@ -82,7 +135,7 @@ namespace ft
 		{
 			while (node->key != _null->key)
 			{
-				if (_null->key < node->key)
+				if (_key_comp(_null->key, node->key))
 					node = node->left;
 				else
 					node = node->right;
@@ -178,18 +231,18 @@ namespace ft
 			while (crawler->isNotLeaf())
 			{
 				parent = crawler;
-				if (key < crawler->key)
+				if (_key_comp(key, crawler->key))
 					crawler = crawler->left;
-				else if (key > crawler->key)
-					crawler = crawler->right;
-				else
+				else if (key == crawler->key)
 					return *crawler; // This return is not in Intro to Algo, it prevent duplicate insert.
+				else
+					crawler = crawler->right;
 			}
 			rbnode_t* newNode = newRBNode(key);
 			newNode->parent = parent;
 			if (parent->isNull())
 				_root = newNode;
-			else if (key < parent->key)
+			else if (_key_comp(key, parent->key))
 				parent->left = newNode;
 			else
 				parent->right = newNode;
