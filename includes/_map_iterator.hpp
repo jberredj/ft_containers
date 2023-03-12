@@ -8,9 +8,16 @@
 namespace ft
 {
 	template <class Value>
-	class mapIterator : ft::iterator<std::bidirectional_iterator_tag, Value::value_type> {
+	class mapIterator : public ft::iterator<std::bidirectional_iterator_tag, Value> {
+	private:
+		typedef ft::iterator<std::bidirectional_iterator_tag, typename Value::value_type>	_iterator;
 	public:
 		typedef Value			node_type;
+		typedef std::bidirectional_iterator_tag iterator_category;
+		typedef typename _iterator::value_type	value_type;
+		typedef typename _iterator::difference_type	difference_type;
+		typedef typename _iterator::reference	reference;
+		typedef typename _iterator::pointer	pointer;
 		typedef const reference	const_reference;
 		node_type*				_pNode;
 
@@ -26,7 +33,7 @@ namespace ft
 		}
 
 		reference	operator*(void) const { return _pNode->key; }
-		pointer		operator->(void) const { return std::addressof(operator*()); }
+		pointer		operator->(void) const { return &(operator*()); }
 		
 		reference	operator++(void)
 		{
