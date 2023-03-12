@@ -10,7 +10,9 @@ namespace ft {
 		T2 second;
 
 		pair() : first(T1()), second(T2()) {}
-		pair(T1 _first, T2 _second) : first(_first), second(_second) {}
+		pair(const T1 _first, const T2 _second) : first(_first), second(_second) {}
+		template<class U, class V>
+		pair(const pair<U, V> &p): first(p.first), second(p.second) {}
 
 		// operator= is implicitly declared CF : https://en.cppreference.com/w/cpp/utility/pair/operator%3D
 
@@ -45,7 +47,7 @@ namespace ft {
 	}
 
 	template <class T1, class T2, class U1, class U2>
-	bool	operator>(const ft::pair<T1, T2> &lhs, const ft::pair<U1, U2> &rhs) {
+	bool	operator>=(const ft::pair<T1, T2> &lhs, const ft::pair<U1, U2> &rhs) {
 		return !(lhs < rhs);
 	}
 

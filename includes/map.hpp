@@ -13,11 +13,11 @@ namespace ft
 		class Key,
 		class T,
 		class Compare = std::less<Key>,
-		class Allocator = std::allocator<std::pair<const Key, T>>>
+		class Allocator = std::allocator<std::pair<const Key, T> > >
 	class map
 	{
 	private:
-		typedef RBT<ft::pair<const Key, T>, Compare, Allocator::template rebind<T>::other> _tree_t;
+		typedef RBT<ft::pair<const Key, T>, Compare, typename Allocator::template rebind<T>::other> _tree_t;
 
 	public:
 		typedef Key key_type;
@@ -28,9 +28,9 @@ namespace ft
 		typedef Compare key_compare;
 		typedef Allocator allocator_type;
 		typedef value_type &reference;
-		typedef const reference const_reference;
+		typedef const value_type &const_reference;
 		typedef typename Allocator::pointer pointer;
-		typedef typename Allocator::const_pointer pointer;
+		typedef typename Allocator::const_pointer const_pointer;
 		typedef typename _tree_t::iterator iterator;
 		typedef typename _tree_t::const_iterator const_iterator;
 		typedef typename ft::reverse_iterator<iterator> reverse_iterator;
@@ -79,7 +79,7 @@ namespace ft
 
 		~map() { clear(); } // TODO: implement clear
 
-		reference operator=(const reference rhs)
+		reference operator=(const_reference rhs)
 		{
 			clear();
 			_alloc = rhs._alloc;
@@ -124,14 +124,14 @@ namespace ft
 
 		std::pair<iterator, bool> insert(const value_type &value)
 		{
-			value_type	newPair = _tree.insert(value)
+			value_type newPair = _tree.insert(value);
 			return pair<iterator, bool>(iterator(newPair), _tree.insertSucceed());
 		}
 
-		iterator insert(iterator pos, const value_type& value)
+		iterator insert(iterator pos, const value_type &value)
 		{
-			value_type	newPair = _tree.insert(value)
-			return (iterator(new_pair));
+			value_type newPair = _tree.insert(value);
+			return (iterator(newPair, *pos));
 		}
 
 		template <class InputIt>
