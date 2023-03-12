@@ -147,10 +147,7 @@ namespace ft
 		void erase(iterator pos)
 		{
 			if (pos != end())
-			{
 				_tree.remove(*pos);
-				--_size;
-			}
 		}
 
 		size_type erase(const key_type& key)
@@ -171,6 +168,25 @@ namespace ft
 				erase(first);
 				first = tmp;
 			}
+		}
+
+		void swap (map& other)
+		{
+			value_compare   val_comp = other._val_comp;
+			allocator_type  alloc = other._alloc;
+			key_compare     key_comp = other._key_comp;
+			size_t          size = other._size;         
+
+			other._val_comp = _val_comp;
+			other._alloc = _alloc;
+			other._key_comp = _key_comp;
+			other._size = _size;
+
+			_val_comp = val_comp;
+			_alloc = alloc;
+			_key_comp = key_comp;
+			_size = size;
+			_tree.swap(other._tree);
 		}
 	};
 
