@@ -115,12 +115,34 @@ namespace ft
 			return ((insert(ft::make_pair(x, T()))).first)->second;
 		}
 
-		bool empty(void) const {return _tree.getRoot() == _tree.getNull();}
-		
-		size_type	size(void) const {return _tree.size()}
-		size_type	max_size(void) const {return _tree.max_size()}
+		bool empty(void) const { return _tree.getRoot() == _tree.getNull(); }
+
+		size_type size(void) const { return _tree.size(); }
+		size_type max_size(void) const { return _tree.max_size(); }
 
 		void clear(void) { _tree.emptyTree(); }
+
+		std::pair<iterator, bool> insert(const value_type &value)
+		{
+			value_type	newPair = _tree.insert(value)
+			return pair<iterator, bool>(iterator(newPair), _tree.insertSucceed());
+		}
+
+		iterator insert(iterator pos, const value_type& value)
+		{
+			value_type	newPair = _tree.insert(value)
+			return (iterator(new_pair));
+		}
+
+		template <class InputIt>
+		void insert(InputIt first, InputIt last)
+		{
+			while (first != last)
+			{
+				insert(*first);
+				++first;
+			}
+		}
 	};
 
 }

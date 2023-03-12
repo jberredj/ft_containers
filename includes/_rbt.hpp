@@ -30,17 +30,19 @@ namespace ft
 		rbnode_t* _null;
 		rbnode_t* _root;
 		size_t	_size;
+		bool	_insertionSucceed;
 	public:
 
 		RBT(const allocator_type& alloc = allocator_type(), const key_compare& key_comp = key_compare())
-			: _alloc(alloc), _nalloc(alloc), _key_comp(key_comp), _size(0)
+			: _alloc(alloc), _nalloc(alloc), _key_comp(key_comp), _size(0), _insertionSucceed(false)
 		{
 			rbnode_t tmp;
 			_null = _nalloc.allocate(1);
 			_nalloc.construct(_null, tmp);
 			_root = _null;
 		}
-		RBT(const RBT& src) : _alloc(src._alloc), _nalloc(src._nalloc), _key_comp(src._key_comp), _size(0)
+		RBT(const RBT& src) : _alloc(src._alloc), _nalloc(src._nalloc), _key_comp(src._key_comp), _size(0),
+							  _insertionSucceed(false)
 		{
 			iterator it = src.min();
 			iterator end = src._null;
@@ -94,8 +96,24 @@ namespace ft
 
 		rbnode_t& insert(T key)
 		{
-			return _insert(key);
+			size_t	beforeSize = _size;
+			rbnode_t& newKey = _insert(key, _root);
+			_insertionSucceed = (beforeSize != _size);
+			return newKey;
 		}
+
+		rbnode_t& insert(T key, rbnode_t* position)
+		{
+			size_t	beforeSize = _size;
+			rbnode_t* existing = search(key);
+			if (existing)
+				return *existing;
+			rbnode_t& newKey = _insert(key, position);
+			_insertionSucceed = (beforeSize != _size);
+			return newKey;
+		}
+
+		bool	insertSucceed(void) const { return _insertionSucceed; }
 
 		rbnode_t* search(T key)
 		{
@@ -227,10 +245,9 @@ namespace ft
 
 		// newNode is alloc after the search here, intro to algo provide a node to insert to this function instead of a 
 		// key value. I did this change to prevent useless alloc/destroy.
-		rbnode_t& _insert(T key)
+		rbnode_t& _insert(T key, rbnode_t* crawler)
 		{
 			rbnode_t*	parent = _null;
-			rbnode_t*	crawler = _root;
 			while (crawler->isNotLeaf())
 			{
 				parent = crawler;
