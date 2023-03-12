@@ -275,6 +275,9 @@ namespace ft
 			}
 			return cendit; 
 		}
+
+		key_compare key_comp() const {return _key_comp;}
+		value_compare value_comp() const {return _val_comp;}
 	};
 
 }
