@@ -20,8 +20,8 @@ namespace ft
 		RBNode *parent;
 
 		RBNode() : key(T()), color(BLACK), left(this), right(this), parent(this), _null(true) {} // This constructor is only used by the leaf/null terminator
-		RBNode(T _key, RBNode &nullNode) : key(_key), color(RED), left(&nullNode), right(&nullNode),
-										   parent(&nullNode), _null(false) {}
+		RBNode(T _key, RBNode *nullNode) : key(_key), color(RED), left(nullNode), right(nullNode),
+										   parent(nullNode), _null(false) {}
 
 		bool isLeftChild(void) const { return parent->left == this; }
 		bool isRightChild(void) const { return parent->right == this; }
@@ -78,7 +78,13 @@ namespace ft
 			return node;
 		}
 
-		RBNode*	min(void) const { return min(); }
+		RBNode const*	min(void) const 
+		{
+			RBNode const *node = this;
+			while (node->leftChildIsNotLeaf())
+				node = node->left;
+			return node;
+		}
 
 		RBNode*	max(void)
 		{
@@ -87,7 +93,13 @@ namespace ft
 				node = node->right;
 			return node;
 		}
-		RBNode*	max(void) const { return max(); }
+		RBNode const*	max(void) const
+		{
+			RBNode const *node = this;
+			while (node->rightChildIsNotLeaf())
+				node = node->right;
+			return node;
+		}
 
 		RBNode*	successor()
 		{
@@ -102,7 +114,20 @@ namespace ft
 			}
 			return y;
 		}
-		const RBNode*	successor(void) const { return successor(); }
+
+		const RBNode*	successor() const
+		{
+			if (rightChildIsNotLeaf())
+				return right->min();
+			RBNode *y = parent;
+			const RBNode *x = this;
+			while (y->isNotNull() && x == y->right)
+			{
+				x = y;
+				y = y->parent;
+			}
+			return y;
+		}
 
 		RBNode*	predecessor()
 		{
@@ -117,14 +142,26 @@ namespace ft
 			}
 			return y;
 		}
-		const RBNode*	predecessor(void) const { return predecessor(); }
+		const RBNode*	predecessor(void) const 
+		{
+			if (leftChildIsNotLeaf())
+				return left->max();
+			RBNode *y = parent;
+			const RBNode *x = this;
+			while (y->isNotNull() && x == y->left)
+			{
+				x = y;
+				y = y->parent;
+			}
+			return y;
+		}
 
 	private:
 		bool _null;
 	};
 
 	template <class T>
-	bool operator<(const RBNode<T> &lhs, const RBNode<T> &rhs) { return lhs.getKey() < rhs.getKey(); }
+	bool operator<(const RBNode<T> &lhs, const RBNode<T> &rhs) { return lhs.key < rhs.key; }
 
 	template <class T>
 	bool operator>(const RBNode<T> &lhs, const RBNode<T> &rhs) { return !(lhs < rhs); }
