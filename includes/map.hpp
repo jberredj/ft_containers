@@ -90,7 +90,23 @@ namespace ft
 		}
 
 		allocator_type get_allocator() const {return _alloc;}
+
+		T& at(const Key& key)
+		{
+			iterator    it = find(key); // TODO: Implement find
+			if (find(key) == end()) // TODO: Implement iterators function
+				throw::std::out_of_range("ft::map::at");
+			return (find(key)->second);
+		}
+
+		const T& at( const Key& key ) const { return at(key); }
+
+		T& operator[](const key_type& x)
+		{
+			return ((insert(ft::make_pair(x, T()))).first)->second;
+		}
 	};
+	
 }
 
 #endif
