@@ -27,7 +27,7 @@ namespace ft
 		typedef std::ptrdiff_t difference_type;
 		typedef Compare key_compare;
 		typedef Allocator allocator_type;
-		typedef value_type &reference;
+		typedef value_type& reference;
 		typedef const reference const_reference;
 		typedef typename Allocator::pointer pointer;
 		typedef typename Allocator::const_pointer pointer;
@@ -78,6 +78,16 @@ namespace ft
 			  _key_comp(other._key_comp), _size(other._size), _tree(other._tree) {}
 
 		~map() { clear(); } // TODO: implement clear
+
+		reference operator=(const reference rhs)
+		{
+			clear();
+			_alloc = rhs._alloc;
+			_key_comp = rhs._key_comp;
+			_size = rhs._size;
+			_tree = rhs._tree;
+			return *this;
+		}
 	};
 }
 
