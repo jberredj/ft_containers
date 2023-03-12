@@ -143,6 +143,35 @@ namespace ft
 				++first;
 			}
 		}
+
+		void erase(iterator pos)
+		{
+			if (pos != end())
+			{
+				_tree.remove(*pos);
+				--_size;
+			}
+		}
+
+		size_type erase(const key_type& key)
+		{
+			iterator it = find(key);
+			if (it == end())
+				return 0;
+			erase(it);
+			return 1;
+		}
+
+		void erase(iterator first, iterator last)
+		{
+			while (first != last)
+			{
+				iterator tmp = first;
+				++tmp;
+				erase(first);
+				first = tmp;
+			}
+		}
 	};
 
 }
