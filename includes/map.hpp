@@ -188,6 +188,93 @@ namespace ft
 			_size = size;
 			_tree.swap(other._tree);
 		}
+
+		size_type count(const key_type& key) const
+		{
+			if (find(key) != end())
+				return 1;
+			return 0;
+		}
+
+		iterator find(const key_type& key)
+		{
+			value_type newPair = ft::make_pair(key, mapped_type());
+			return iterator(_tree.search(newPair));
+		}
+		
+		const_iterator find(const key_type& key) const
+		{
+			value_type newPair = ft::make_pair(key, mapped_type());
+			return const_iterator(_tree.search(newPair));
+		}
+
+		pair<iterator,iterator>
+		equal_range(const key_type& key)
+		{
+			return pair<iterator, iterator>(iterator(lower_bound(key)), iterator(upper_bound(key)));
+		}
+		
+		pair<const_iterator,const_iterator>
+		equal_range(const key_type& key) const
+		{
+			return pair<const_iterator, const_iterator>(const_iterator(lower_bound(key)), const_iterator(upper_bound(key)));
+		}
+
+		iterator lower_bound(const key_type& key)
+		{
+			iterator it = begin();
+			iterator endit = endit();
+
+			while (it != endit)
+			{
+				if (!(_key_comp((*it).first, key)))
+					return it;
+				++it;
+			}
+			return endit;          
+		}
+		
+		const_iterator lower_bound(const key_type& key) const
+		{
+			const_iterator cit = begin();
+			const_iterator cendit = end();
+
+			while (cit != cendit)
+			{
+				if (!(_key_comp((*cit).first, key)))
+					return cit;
+				++cit;
+			}
+			return cendit;      
+		}
+
+		iterator upper_bound(const key_type& key)
+		{
+			iterator it = begin();
+			iterator endit = end();
+
+			while (it != endit)
+			{
+				if ((_key_comp(key, (*it).first)))
+					return it;
+				++it;
+			}
+			return endit;  
+		}
+		
+		const_iterator upper_bound(const key_type& key) const
+		{
+			const_iterator cit = begin();
+			const_iterator cendit = end();
+
+			while (cit != cendit)
+			{
+				if ((_key_comp(key, (*cit).first)))
+					return cit;
+				++cit;
+			}
+			return cendit; 
+		}
 	};
 
 }

@@ -162,7 +162,7 @@ namespace ft
 					node = node->right;
 			}
 			if (node->isNull())
-				return NULL;
+				return _null;
 			return node;
 		}
 
