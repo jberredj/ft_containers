@@ -114,13 +114,16 @@ namespace ft
 			_root = _null;
 		}
 
-		rbnode_t*	min() { return _root->min(); }
-		rbnode_t*	min() const { return min(); }
-		rbnode_t*	max() { return _root->max(); }
-		rbnode_t*	max() const { return max(); }
+		rbnode_t*	min(void) { return _root->min(); }
+		rbnode_t*	min(void) const { return min(); }
+		rbnode_t*	max(void) { return _root->max(); }
+		rbnode_t*	max(void) const { return max(); }
 
 		size_t	size(void) const { return _size; }
 		size_t	max_size(void) const { return _nalloc.max_size(); }
+
+		rbnode_t*	getNull(void) { return _null; }
+		rbnode_t*	getNull(void) const { return _null; }
 
 #ifdef BSTTEST
 		rbnode_t*	getRoot() { return _root; }
