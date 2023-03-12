@@ -17,6 +17,7 @@ namespace ft
 		typedef Compare		key_compare;
 		typedef RBNode<value_type> rbnode_t;
 		typedef mapIterator<rbnode_t> iterator;
+		typedef const mapIterator<rbnode_t> const_iterator; //FIXME: A proper const mapIterator maybe needed
 	private:
 		typedef typename Allocator::template rebind<RBNode<T> >::other _Node_alloc; // templated typedef would not work without ::template
 		typedef void (RBT::*rotateFuncP)(rbnode_t &);
