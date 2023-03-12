@@ -1,7 +1,6 @@
 #ifndef REVERSE_ITERATOR_HPP
 # define REVERSE_ITERATOR_HPP
 # include <cstddef>
-# include <memory>
 # include "_iterator.hpp"
 
 namespace ft {
@@ -38,7 +37,7 @@ namespace ft {
 			Iterator tmp = current;
 			return *--tmp;
 		}
-		pointer operator->() const { return std::addressof(operator*()); } //TODO: I don't know if we are allowed to use std::addressof
+		pointer operator->() const { return &(operator*()); } // turnsout std::addressof is a c++11 feature
 
 		reference operator[](difference_type n) const
 		{
