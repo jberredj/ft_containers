@@ -45,7 +45,9 @@ namespace ft
 			assign(count, value);
 		}
 		template <class InputIt>
-		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator()) : _alloc(alloc), _array(_alloc.allocate(0)), _size(0), _capacity(0) // TODO: Some implemetation uses enable_if<is_integral> figure out why
+		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator(),
+			   typename ft::enable_if<!ft::is_integral<InputIt>::value>::type * = NULL)
+			: _alloc(alloc), _array(_alloc.allocate(0)), _size(0), _capacity(0)
 		{
 			assign(first, last); // TODO: implement assign
 		}
@@ -74,7 +76,8 @@ namespace ft
 		}
 
 		template <class InputIt>
-		void assign(InputIt first, InputIt last)
+		void assign(InputIt first, InputIt last,
+			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = NULL)
 		{
 			clear();
 			insert(begin(), first, last);
@@ -150,7 +153,7 @@ namespace ft
 			_size = 0;
 		}
 
-		iterator insert(const_iterator pos, const T &value)
+		iterator insert(iterator pos, const T &value)
 		{
 			difference_type index = pos - begin();
 			insert(pos, 1, value);
@@ -169,7 +172,7 @@ namespace ft
 
 		template <class InputIt>
 		void insert(iterator pos, InputIt first, InputIt last,
-			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = NULL)
+					typename ft::enable_if<!ft::is_integral<InputIt>::value>::type * = NULL)
 		{
 			difference_type count = 0;
 			InputIt it = first;
