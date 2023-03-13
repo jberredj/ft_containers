@@ -37,15 +37,15 @@ namespace ft
 
 	public:
 		// giving default value to allocator make this constructor the default one
-		explicit vector(const Allocator &alloc = allocator_type()) : _alloc(alloc), _array(NULL), _size(0), _capacity(0) {}
+		explicit vector(const Allocator &alloc = allocator_type()) : _alloc(alloc), _array(_alloc.allocate(0)), _size(0), _capacity(0) {}
 		explicit vector(size_type count, const T &value = T(), const Allocator &alloc = Allocator())
-			: _alloc(alloc), _array(NULL),
-			  _size(count), _capacity(count)
+			: _alloc(alloc), _array(_alloc.allocate(0)),
+			  _size(0), _capacity(0)
 		{
 			assign(count, value);
 		}
 		template <class InputIt>
-		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator()) : _alloc(alloc), _array(NULL), _size(0), _capacity(0) // TODO: Some implemetation uses enable_if<is_integral> figure out why
+		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator()) : _alloc(alloc), _array(_alloc.allocate(0)), _size(0), _capacity(0) // TODO: Some implemetation uses enable_if<is_integral> figure out why
 		{
 			assign(first, last); // TODO: implement assign
 		}
@@ -84,7 +84,7 @@ namespace ft
 
 		const_reference at(size_type pos) const
 		{
-			if (!(pos < _size))
+			if (pos > _size)
 				throw std::out_of_range("ft::vector::at");
 
 			return _array[pos];
@@ -92,7 +92,7 @@ namespace ft
 
 		reference at(size_type pos)
 		{
-			if (!(pos < _size))
+			if (pos > _size)
 				throw std::out_of_range("ft::vector::at");
 
 			return _array[pos];
@@ -114,10 +114,10 @@ namespace ft
 		const_iterator begin(void) const { return const_iterator(_array); };
 		iterator end(void) { return iterator(_array + _size); };
 		const_iterator end(void) const { return const_iterator(_array + _size); };
-		reverse_iterator rbegin(void) { return reverse_iterator(begin()); };
-		const_reverse_iterator rbegin(void) const { return const_reverse_iterator(begin()); };
-		reverse_iterator rend(void) { return reverse_iterator(end()); };
-		const_reverse_iterator rend(void) const { return const_reverse_iterator(end()); };
+		reverse_iterator rbegin(void) { return reverse_iterator(_array + _size); };
+		const_reverse_iterator rbegin(void) const { return const_reverse_iterator(_array + _size); };
+		reverse_iterator rend(void) { return reverse_iterator(_array); };
+		const_reverse_iterator rend(void) const { return const_reverse_iterator(_array); };
 
 		bool empty(void) const { return _size == 0; }
 		size_type size(void) const { return _size; }
