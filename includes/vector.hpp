@@ -38,15 +38,13 @@ namespace ft
 		// giving default value to allocator make this constructor the default one
 		explicit vector(const Allocator &alloc = allocator_type()) : _alloc(alloc), _array(NULL), _size(0), _capacity(0) {}
 		explicit vector(size_type count, const T &value = T(), const Allocator &alloc = Allocator())
-			: _alloc(alloc),
+			: _alloc(alloc), _array(NULL),
 			  _size(count), _capacity(count)
 		{
-			_array = _alloc.allocate(count);
-			for (size_type i = 0; i < _size; i++)
-				_alloc.construct(&_array[i], value);
+			assign(count, value);
 		}
 		template <class InputIt>
-		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator()) : _alloc(alloc), _size(0), _capacity(0) // TODO: Some implemetation uses enable_if<is_integral> figure out why
+		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator()) : _alloc(alloc), _array(NULL) , _size(0), _capacity(0) // TODO: Some implemetation uses enable_if<is_integral> figure out why
 		{
 			assign(first, last); // TODO: implement assign
 		}
