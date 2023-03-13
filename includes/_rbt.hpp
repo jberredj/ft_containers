@@ -47,8 +47,8 @@ namespace ft
 		RBT(const RBT &src) : _alloc(src._alloc), _nalloc(src._nalloc), _key_comp(src._key_comp), _size(0),
 							  _insertionSucceed(false)
 		{
-			iterator it = src.min();
-			iterator end = src._null;
+			const_iterator it = const_iterator(src.min(), src._root);
+			const_iterator end = const_iterator(src._null, src._root);
 			rbnode_t tmp;
 
 			_null = _nalloc.allocate(1);
@@ -60,7 +60,7 @@ namespace ft
 
 			while (it != end)
 			{
-				_insert(*it);
+				_insert(*it, _root);
 				++it;
 			}
 		}
