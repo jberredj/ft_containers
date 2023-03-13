@@ -213,6 +213,9 @@ namespace ft
 			return first;
 		}
 
+		void push_back(const T& value) { insert(end(), value); }
+		void pop_back() { erase(end() - 1); }
+
 	private:
 		iterator _reserve_keep_pos(iterator pos, size_type count)
 		{
