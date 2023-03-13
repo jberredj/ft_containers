@@ -118,6 +118,11 @@ namespace ft
 		const_reverse_iterator rbegin(void) const { return const_reverse_iterator(begin()); };
 		reverse_iterator rend(void) { return reverse_iterator(end()); };
 		const_reverse_iterator rend(void) const { return const_reverse_iterator(end()); };
+
+		bool empty(void) const { return _size == 0; }
+		size_type size(void) const { return _size; }
+		size_type max_size(void) const { return _alloc.max_size(); }
+		size_type capacity(void) const { return _capacity; }
 	};
 
 }
