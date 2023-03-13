@@ -62,7 +62,6 @@ namespace ft
 
 		vector &operator=(const vector &other)
 		{
-			clear();
 			assign(other.begin(), other.end());
 			return *this;
 		}
