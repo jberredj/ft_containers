@@ -100,8 +100,8 @@ namespace ft
 	class cRandom_access_iterator : public ft::iterator<std::random_access_iterator_tag, T>
 	{
 	private:
-		typedef ft::iterator<std::random_access_iterator_tag, T> _iterator;
-		T const *_value;
+		typedef ft::iterator<std::random_access_iterator_tag, T const> _iterator;
+		const T *_value;
 
 	public:
 		typedef cRandom_access_iterator iterator_type;

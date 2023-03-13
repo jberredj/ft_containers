@@ -216,6 +216,29 @@ namespace ft
 		void push_back(const T& value) { insert(end(), value); }
 		void pop_back() { erase(end() - 1); }
 
+		void resize(size_type count, T value = T())
+		{
+			if (count < size())
+				erase(begin() + count, end());
+			else if (count > size())
+				insert(end(), count - _size, value);
+		}
+
+		void swap(vector & other)
+		{
+			allocator_type	tmpAlloc = other._alloc;
+			T* tmpArray = other._array;
+			size_type tmpSize = other._size;
+
+			other._alloc = _alloc;
+			other._array = _array;
+			other._size = _size;
+		
+			_alloc = tmpAlloc;
+			_array = tmpArray;
+			_size = tmpSize;
+		}
+
 	private:
 		iterator _reserve_keep_pos(iterator pos, size_type count)
 		{
@@ -256,6 +279,11 @@ namespace ft
 			}
 		}
 	};
+
+	template <class T, class Allocator>
+	void swap(vector<T,Allocator>& lhs, vector<T,Allocator>& rhs) { 
+		lhs.swap(rhs);
+	}
 
 }
 
