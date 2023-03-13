@@ -12,7 +12,7 @@
 
 namespace ft
 {
-	template <class T, class Allocator = std::allocator<T>>
+	template <class T, class Allocator = std::allocator<T> >
 	class vector
 	{
 	public:
@@ -58,7 +58,7 @@ namespace ft
 		~vector()
 		{
 			clear();
-			_alloc.deallocate(_value, _capacity); // clear() will be in charge of destroy
+			_alloc.deallocate(_array, _capacity); // clear() will be in charge of destroy
 		}
 
 		vector &operator=(const vector &other)
@@ -131,14 +131,14 @@ namespace ft
 			if (new_cap <= _capacity)
 				return;
 
-			T *newArray = _alloc.allocate(new_cap);
+			pointer newArray = _alloc.allocate(new_cap);
 			for (size_type i = 0; i < _size; i++)
 			{
-				_alloc.construct(newArray + i, _array + i);
-				_alloc.destroy(_array + i);
+				_alloc.construct(&newArray[i], _array[i]);
+				_alloc.destroy(&_array[i]);
 			}
 
-			_alloc.dealocate(_array, _capacity);
+			_alloc.deallocate(_array, _capacity);
 			_array = newArray;
 			_capacity = new_cap;
 		}
@@ -148,6 +148,65 @@ namespace ft
 			for (size_type i = 0; i < _size; i++)
 				_alloc.destroy(_array + i);
 			_size = 0;
+		}
+
+		iterator insert(const_iterator pos, const T &value)
+		{
+			difference_type index = pos - begin();
+			insert(pos, 1, value);
+			return begin() + index;
+		}
+
+		void insert(iterator pos, size_type count, const T &value)
+		{
+			pos = _reserve_keep_pos(pos, count);
+
+			_rightShift(pos, count);
+			for (iterator cur = pos; cur < pos + count; cur++)
+				_alloc.construct(&(*cur), value);
+			_size += count;
+		}
+
+		template <class InputIt>
+		void insert(iterator pos, InputIt first, InputIt last,
+			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = NULL)
+		{
+			difference_type count = 0;
+			InputIt it = first;
+			count = last - first;
+
+			pos = _reserve_keep_pos(pos, count);
+			_rightShift(pos, count);
+
+			it = first;
+			for (; it != last; pos++, it++)
+			{
+				_alloc.construct(&(*pos), *it);
+			}
+			_size += count;
+		}
+
+	private:
+		iterator _reserve_keep_pos(iterator pos, size_type count)
+		{
+			if (_size + count <= _capacity)
+				return pos;
+			difference_type index = pos - begin();
+			reserve(std::max<size_type>(count + _size, 2 * _size));
+			return begin() + index;
+		}
+
+		void _rightShift(iterator pos, size_type count)
+		{
+			if (!count)
+				return;
+
+			iterator new_pos = end() + count - 1;
+			for (iterator it = end() - 1; it >= pos; it--, new_pos--)
+			{
+				_alloc.construct(&(*new_pos), *it);
+				_alloc.destroy(&(*it));
+			}
 		}
 	};
 
