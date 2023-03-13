@@ -57,7 +57,7 @@ namespace ft
 
 		~vector()
 		{
-			clear();							  // TODO: implement clear;
+			clear();
 			_alloc.deallocate(_value, _capacity); // clear() will be in charge of destroy
 		}
 
@@ -131,7 +131,7 @@ namespace ft
 			if (new_cap <= _capacity)
 				return;
 
-			T* newArray = _alloc.allocate(new_cap);
+			T *newArray = _alloc.allocate(new_cap);
 			for (size_type i = 0; i < _size; i++)
 			{
 				_alloc.construct(newArray + i, _array + i);
@@ -141,6 +141,13 @@ namespace ft
 			_alloc.dealocate(_array, _capacity);
 			_array = newArray;
 			_capacity = new_cap;
+		}
+
+		void clear(void)
+		{
+			for (size_type i = 0; i < _size; i++)
+				_alloc.destroy(_array + i);
+			_size = 0;
 		}
 	};
 
