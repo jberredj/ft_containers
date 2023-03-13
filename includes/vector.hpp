@@ -2,6 +2,7 @@
 #define VECTOR_HPP
 #include <memory>
 #include <cstddef>
+#include <exception>
 #include "random_access_iterator.hpp"
 #include "reverse_iterator.hpp"
 #include "is_integral.hpp"
@@ -44,7 +45,7 @@ namespace ft
 			assign(count, value);
 		}
 		template <class InputIt>
-		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator()) : _alloc(alloc), _array(NULL) , _size(0), _capacity(0) // TODO: Some implemetation uses enable_if<is_integral> figure out why
+		vector(InputIt first, InputIt last, const Allocator &alloc = Allocator()) : _alloc(alloc), _array(NULL), _size(0), _capacity(0) // TODO: Some implemetation uses enable_if<is_integral> figure out why
 		{
 			assign(first, last); // TODO: implement assign
 		}
@@ -80,7 +81,36 @@ namespace ft
 		}
 
 		allocator_type get_allocator() const { return _alloc; }
+
+		const_reference at(size_type pos) const
+		{
+			if (!(pos < _size))
+				throw std::out_of_range("ft::vector::at");
+
+			return _array[pos];
+		}
+
+		reference at(size_type pos)
+		{
+			if (!(pos < _size))
+				throw std::out_of_range("ft::vector::at");
+
+			return _array[pos];
+		}
+
+		reference operator[](size_type pos) { return *(_array + pos); }
+		const_reference operator[](size_type pos) const { return *(_array + pos); }
+
+		reference front(void) { return *_array; }
+		const_reference front(void) const { return *_array; }
+
+		reference back(void) { return *(_array + (_size - 1)); }
+		const_reference back(void) const { return *(_array + (_size - 1)); }
+
+		pointer data(void) { return _array; }
+		const_pointer data(void) const { return _array; }
 	};
+
 }
 
 #endif
