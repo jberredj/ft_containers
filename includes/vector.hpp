@@ -77,7 +77,7 @@ namespace ft
 
 		template <class InputIt>
 		void assign(InputIt first, InputIt last,
-			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = NULL)
+					typename ft::enable_if<!ft::is_integral<InputIt>::value>::type * = NULL)
 		{
 			clear();
 			insert(begin(), first, last);
@@ -189,6 +189,30 @@ namespace ft
 			_size += count;
 		}
 
+		iterator erase(iterator pos)
+		{
+			if (pos == end())
+				return pos;
+
+			_inorderDestroy(pos, pos + 1);
+			if (pos < end() - 1)
+				_leftShift(pos, 1);
+			_size--;
+			return pos;
+		}
+
+		iterator erase(iterator first, iterator last)
+		{
+			if (first == last)
+				return first;
+
+			_inorderDestroy(first, last);
+			if (last < end())
+				_leftShift(first, std::distance(first, last));
+			_size -= (last - first);
+			return first;
+		}
+
 	private:
 		iterator _reserve_keep_pos(iterator pos, size_type count)
 		{
@@ -208,6 +232,23 @@ namespace ft
 			for (iterator it = end() - 1; it >= pos; it--, new_pos--)
 			{
 				_alloc.construct(&(*new_pos), *it);
+				_alloc.destroy(&(*it));
+			}
+		}
+
+		void _leftShift(iterator pos, size_type count)
+		{
+			for (iterator it = pos; it < end() - count; it++)
+			{
+				_alloc.construct(&(*it), *(it + count));
+				_alloc.destroy(&(*(it + count)));
+			}
+		}
+
+		void _inorderDestroy(iterator first, iterator last)
+		{
+			for (iterator it = first; it < last; it++)
+			{
 				_alloc.destroy(&(*it));
 			}
 		}
