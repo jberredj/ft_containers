@@ -1,5 +1,5 @@
 #ifndef ENABLE_IF_HPP
-# define ENABLE_IF_HP
+# define ENABLE_IF_HPP
 
 namespace ft {
 	// once again cppreference carries https://en.cppreference.com/w/cpp/types/enable_if
