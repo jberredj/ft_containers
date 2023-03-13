@@ -123,6 +123,25 @@ namespace ft
 		size_type size(void) const { return _size; }
 		size_type max_size(void) const { return _alloc.max_size(); }
 		size_type capacity(void) const { return _capacity; }
+
+		void reserve(size_type new_cap)
+		{
+			if (max_size() < new_cap)
+				throw std::length_error("vector::reserve");
+			if (new_cap <= _capacity)
+				return;
+
+			T* newArray = _alloc.allocate(new_cap);
+			for (size_type i = 0; i < _size; i++)
+			{
+				_alloc.construct(newArray + i, _array + i);
+				_alloc.destroy(_array + i);
+			}
+
+			_alloc.dealocate(_array, _capacity);
+			_array = newArray;
+			_capacity = new_cap;
+		}
 	};
 
 }
