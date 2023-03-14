@@ -114,7 +114,7 @@ namespace ft
 		cRandom_access_iterator(void) : _value(NULL) {}
 		cRandom_access_iterator(const T *value) : _value(value) {}
 		cRandom_access_iterator(const iterator_type &it) : _value(it._value) {}
-		cRandom_access_iterator(const ft::random_access_iterator<T> &it) : _value(it._value) {}
+		cRandom_access_iterator(const ft::random_access_iterator<T> &it) : _value(it.operator->()) {}
 		~cRandom_access_iterator(void) {}
 
 		iterator_type &operator=(const iterator_type &rhs)
