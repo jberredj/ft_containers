@@ -3,6 +3,8 @@
 #include <cstddef>
 #include "iterator_traits.hpp"
 #include "_iterator.hpp"
+#include "is_integral.hpp"
+#include "enable_if.hpp"
 
 namespace ft
 {
@@ -44,7 +46,12 @@ namespace ft
 		}
 		pointer operator->() const { return &(operator*()); } // turnsout std::addressof is a c++11 feature
 
-		reference operator[](difference_type n) const
+		reference operator[](difference_type n)
+		{
+			return current[-n - 1];
+		}
+
+		const reference operator[](difference_type n) const 
 		{
 			return current[-n - 1];
 		}
@@ -81,6 +88,7 @@ namespace ft
 		{
 			return reverse_iterator(current + n);
 		}
+		difference_type operator-(const iterator_type &rhs) const { return (current - rhs.current); }
 
 		reverse_iterator &operator+=(difference_type n)
 		{

@@ -178,7 +178,7 @@ namespace ft
 		{
 			difference_type count = 0;
 			InputIt it = first;
-			count = last - first;
+			count = std::distance(first, last);
 
 			pos = _reserve_keep_pos(pos, count);
 			_rightShift(pos, count);
