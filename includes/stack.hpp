@@ -1,11 +1,9 @@
 #ifndef STACK_HPP
 # define STACK_HPP
-# include <vector> // TODO: Remove include
-
+# include "vector.hpp"
 namespace ft {
-	template <class T, class Container=std::vector<T> > //TODO: Replace std with ft
+	template <class T, class Container=ft::vector<T> >
 	class stack {
-		friend bool	operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs);
 	public: 
 		typedef Container							container_type;
 		typedef typename Container::value_type		value_type;
@@ -44,7 +42,7 @@ bool operator!=(const ft::stack<T, Container> &lhs,
 
 template <class T, class Container>
 bool operator<=(const ft::stack<T, Container> &lhs,
-				const ft::stack<T, Container> &rhs) { return !(lhs < rhs); }
+				const ft::stack<T, Container> &rhs) { return !(rhs < lhs); }
 
 template <class T, class Container>
 bool operator>(const ft::stack<T, Container> &lhs,
@@ -52,6 +50,6 @@ bool operator>(const ft::stack<T, Container> &lhs,
 
 template <class T, class Container>
 bool operator>=(const ft::stack<T, Container> &lhs,
-				const ft::stack<T, Container> &rhs) { return !(rhs < lhs); }
+				const ft::stack<T, Container> &rhs) { return !(lhs < rhs); }
 
 #endif
