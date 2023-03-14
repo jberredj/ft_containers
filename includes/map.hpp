@@ -64,20 +64,22 @@ namespace ft
 	public:
 		// the 2 first constructor are handled by this one
 		map() : _val_comp(key_compare()), _alloc(allocator_type()), _key_comp(key_compare()),
-				_size(0), _tree(allocator_type(), key_compare()) {}
-		explicit map(const Compare &comp, const Allocator &alloc = Allocator()) : _val_comp(comp), _alloc(alloc), _key_comp(comp), _size(0), _tree(alloc, comp) {}
+				_tree(allocator_type(), key_compare()) {}
+		explicit map(const Compare &comp, const Allocator &alloc = Allocator())
+			: _val_comp(comp), _alloc(alloc), 
+			  _key_comp(comp), _tree(alloc, comp) {}
 
 		template <class InputIt>
 		map(InputIt first, InputIt last, const key_compare &key_comp = key_compare(),
 			const allocator_type &alloc = allocator_type())
-			: _val_comp(key_comp), _alloc(alloc), _key_comp(key_comp), _size(0),
+			: _val_comp(key_comp), _alloc(alloc), _key_comp(key_comp),
 			  _tree(_alloc, _key_comp)
 		{
 			insert(first, last);
 		}
 		map(const map<Key, T, Compare, Allocator> &other)
 			: _val_comp(other._key_comp), _alloc(other._alloc),
-			  _key_comp(other._key_comp), _size(other._size), _tree(other._tree) {}
+			  _key_comp(other._key_comp), _tree(other._tree) {}
 
 		~map() { clear(); }
 
@@ -86,7 +88,6 @@ namespace ft
 			clear();
 			_alloc = rhs._alloc;
 			_key_comp = rhs._key_comp;
-			_size = rhs._size;
 			_tree = rhs._tree;
 			return *this;
 		}
@@ -177,17 +178,14 @@ namespace ft
 			value_compare val_comp = other._val_comp;
 			allocator_type alloc = other._alloc;
 			key_compare key_comp = other._key_comp;
-			size_t size = other._size;
 
 			other._val_comp = _val_comp;
 			other._alloc = _alloc;
 			other._key_comp = _key_comp;
-			other._size = _size;
 
 			_val_comp = val_comp;
 			_alloc = alloc;
 			_key_comp = key_comp;
-			_size = size;
 			_tree.swap(other._tree);
 		}
 
