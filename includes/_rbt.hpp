@@ -65,21 +65,21 @@ namespace ft
 			}
 		}
 
-		RBT &operator=(const RBT &src)
-		{
-			rbnode_t const	*root = _root;
-			const_iterator it = const_iterator(src.min(), root);
-			iterator end = iterator(src._null, _root);
+		// RBT &operator=(const RBT &src)
+		// {
+		// 	// rbnode_t const	*root = _root;
+		// 	const_iterator it = const_iterator(src.min(), src._root);
+		// 	iterator end = iterator(src._null, src._root);
 
-			emptyTree();
+		// 	emptyTree();
 
-			while (it != end)
-			{
-				_insert(*it, _root);
-				++it;
-			}
-			return *this;
-		}
+		// 	while (it != end)
+		// 	{
+		// 		_insert(*it, _root);
+		// 		it++;
+		// 	}
+		// 	return *this;
+		// }
 
 		void swap(RBT &rhs)
 		{
@@ -396,6 +396,7 @@ namespace ft
 				nearestGreaterNode->left->parent = nearestGreaterNode;
 				nearestGreaterNode->color = toDelete->color;
 			}
+			_null->parent = _null;
 			if (ogColor == ft::BLACK)
 				_removeFixup(transplantedNode);
 			_nalloc.destroy(toDelete);
