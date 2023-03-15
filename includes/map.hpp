@@ -78,18 +78,22 @@ namespace ft
 		{
 			insert(first, last);
 		}
-		map(const map<Key, T, Compare, Allocator> &other)
+		map(const map &other)
 			: _val_comp(other._key_comp), _alloc(other._alloc),
-			  _key_comp(other._key_comp), _tree(other._tree) {}
+			  _key_comp(other._key_comp) 
+			{
+				insert(other.begin(), other.end());
+			}
 
 		~map() { clear(); }
 
-		reference operator=(const_reference rhs)
+		map &operator=(const map &rhs)
 		{
 			clear();
 			_alloc = rhs._alloc;
 			_key_comp = rhs._key_comp;
-			_tree = rhs._tree;
+			insert(rhs.begin(), rhs.end());
+			// _tree = rhs._tree;
 			return *this;
 		}
 

@@ -14,12 +14,12 @@ namespace ft {
 		template<class U, class V>
 		pair(const pair<U, V> &p): first(p.first), second(p.second) {}
 
-		pair &operator=(const pair &pr)
-		{
-			first = pr.first;
-			second = pr.second;
-			return *this;
-		}
+		// pair &operator=(const pair &pr)
+		// {
+		// 	first = pr.first;
+		// 	second = pr.second;
+		// 	return *this;
+		// }
 
 
 	};

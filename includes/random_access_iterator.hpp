@@ -200,13 +200,13 @@ namespace ft
 	template <typename T>
 	cRandom_access_iterator<T> operator+(ptrdiff_t offset, cRandom_access_iterator<T> it)
 	{
-		return static_cast<random_access_iterator<T> >(it.operator->() + offset);
+		return static_cast<cRandom_access_iterator<T> >(it.operator->() + offset);
 	};
 
 	template <typename T>
 	cRandom_access_iterator<T> operator-(ptrdiff_t offset, cRandom_access_iterator<T> it)
 	{
-		return static_cast<random_access_iterator<T> >(it.operator->() - offset);
+		return static_cast<cRandom_access_iterator<T> >(it.operator->() - offset);
 	};
 
 	template <typename T>
