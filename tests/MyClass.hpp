@@ -7,11 +7,12 @@ public:
     int y;
 
     MyClass();
-    MyClass(int _x, int _y);
+    MyClass(const MyClass &src);
+    MyClass(const int _x, const int _y);
     ~MyClass();
 
     // Define the less-than operator for sorting in the map
-    bool operator<(const MyClass& other) const;
+    // bool operator<(const MyClass& other) const;
     bool operator>(const MyClass& other) const;
     bool operator<=(const MyClass& other) const;
     
@@ -19,6 +20,9 @@ public:
 
     bool operator!=(const MyClass& other) const;
 };
+
+bool operator<(const MyClass& lhs, const MyClass& rhs);
+
 
 std::ostream& operator<<(std::ostream& os, const MyClass& obj);
 #endif

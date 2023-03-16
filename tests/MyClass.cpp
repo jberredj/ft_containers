@@ -2,18 +2,29 @@
 #include "MyClass.hpp"
 
 MyClass::MyClass() : x(0), y(0) {}
+MyClass::MyClass(const MyClass &src): x(src.x), y(src.y) {}
 MyClass::MyClass(int _x, int _y) : x(_x), y(_y) {}
 MyClass::~MyClass() {}
 
 // Define the less-than operator for sorting in the map
-bool MyClass::operator<(const MyClass& other) const {
-	if (x < other.x) {
+// bool MyClass::operator<(const MyClass& other) const {
+// 	if (x < other.x) {
+// 		return true;
+// 	}
+// 	if (x > other.x) {
+// 		return false;
+// 	}
+// 	return y < other.y;
+// }
+
+bool operator<(const MyClass& lhs, const MyClass& rhs) {
+	if (lhs.x < rhs.x) {
 		return true;
 	}
-	if (x > other.x) {
+	if (lhs.x > rhs.x) {
 		return false;
 	}
-	return y < other.y;
+	return lhs.y < rhs.y;
 }
 
 bool MyClass::operator>(const MyClass& other) const { return other < *this; }

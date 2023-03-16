@@ -6,10 +6,10 @@ template <>
 int randomValue<int>::get() { return rand(); }
 
 template <>
-char randomValue<char>::get() { return static_cast<char>(rand()) % 256; }
+char randomValue<char>::get() { return static_cast<char>(rand()) % 255; }
 
 template <>
-size_t randomValue<char>::getIteration(void) { return static_cast<char>(rand()) % 256; }
+size_t randomValue<char>::getIteration(void) { return (rand() % 255); }
 
 template <>
 std::string randomValue<std::string>::get() {
