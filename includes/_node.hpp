@@ -78,7 +78,7 @@ namespace ft
 			return node;
 		}
 
-		RBNode const*	min(void) const 
+		RBNode const *min(void) const
 		{
 			RBNode const *node = this;
 			while (node->leftChildIsNotLeaf())
@@ -86,14 +86,14 @@ namespace ft
 			return node;
 		}
 
-		RBNode*	max(void)
+		RBNode *max(void)
 		{
 			RBNode *node = this;
 			while (node->rightChildIsNotLeaf())
 				node = node->right;
 			return node;
 		}
-		RBNode const*	max(void) const
+		RBNode const *max(void) const
 		{
 			RBNode const *node = this;
 			while (node->rightChildIsNotLeaf())
@@ -101,7 +101,7 @@ namespace ft
 			return node;
 		}
 
-		RBNode*	successor()
+		RBNode *successor()
 		{
 			if (rightChildIsNotLeaf())
 				return right->min();
@@ -115,7 +115,7 @@ namespace ft
 			return y;
 		}
 
-		const RBNode*	successor() const
+		const RBNode *successor() const
 		{
 			if (rightChildIsNotLeaf())
 				return right->min();
@@ -129,7 +129,7 @@ namespace ft
 			return y;
 		}
 
-		RBNode*	predecessor()
+		RBNode *predecessor()
 		{
 			if (leftChildIsNotLeaf())
 				return left->max();
@@ -142,7 +142,7 @@ namespace ft
 			}
 			return y;
 		}
-		const RBNode*	predecessor(void) const 
+		const RBNode *predecessor(void) const
 		{
 			if (leftChildIsNotLeaf())
 				return left->max();

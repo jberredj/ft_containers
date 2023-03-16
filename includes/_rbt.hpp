@@ -65,22 +65,6 @@ namespace ft
 			}
 		}
 
-		// RBT &operator=(const RBT &src)
-		// {
-		// 	// rbnode_t const	*root = _root;
-		// 	const_iterator it = const_iterator(src.min(), src._root);
-		// 	iterator end = iterator(src._null, src._root);
-
-		// 	emptyTree();
-
-		// 	while (it != end)
-		// 	{
-		// 		_insert(*it, _root);
-		// 		it++;
-		// 	}
-		// 	return *this;
-		// }
-
 		void swap(RBT &rhs)
 		{
 			rbnode_t *tmp = _null;
@@ -158,28 +142,7 @@ namespace ft
 		rbnode_t *getRoot() { return _root; }
 		const rbnode_t *getRoot() const { return _root; }
 
-#ifdef BSTTEST
-		void validRBT(void)
-		{
-			_validRBT(*_root);
-		}
-#endif
-
 	private:
-		// rbnode_t *_search(rbnode_t *node) const
-		// {
-		// 	while (node->key != _null->key)
-		// 	{
-		// 		if (_key_comp(_null->key, node->key))
-		// 			node = node->left;
-		// 		else
-		// 			node = node->right;
-		// 	}
-		// 	if (node->isNull())
-		// 		return _null;
-		// 	return node;
-		// }
-
 		rbnode_t *_search(rbnode_t *node, T key) const
 		{
 			while (node->isNotNull() && node->key.first != key.first)
@@ -396,7 +359,6 @@ namespace ft
 				nearestGreaterNode->left->parent = nearestGreaterNode;
 				nearestGreaterNode->color = toDelete->color;
 			}
-			// _null->parent = _null;
 			if (ogColor == ft::BLACK)
 				_removeFixup(transplantedNode);
 			_nalloc.destroy(toDelete);

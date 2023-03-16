@@ -66,13 +66,13 @@ namespace ft
 		map() : _val_comp(key_compare()), _alloc(allocator_type()), _key_comp(key_compare()),
 				_tree(allocator_type(), key_compare()) {}
 		explicit map(const Compare &comp, const Allocator &alloc = Allocator())
-			: _val_comp(comp), _alloc(alloc), 
+			: _val_comp(comp), _alloc(alloc),
 			  _key_comp(comp), _tree(alloc, comp) {}
 
 		template <class InputIt>
 		map(InputIt first, InputIt last, const key_compare &key_comp = key_compare(),
 			const allocator_type &alloc = allocator_type(),
-			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = NULL)
+			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type * = NULL)
 			: _val_comp(key_comp), _alloc(alloc), _key_comp(key_comp),
 			  _tree(_alloc, _key_comp)
 		{
@@ -80,10 +80,10 @@ namespace ft
 		}
 		map(const map &other)
 			: _val_comp(other._key_comp), _alloc(other._alloc),
-			  _key_comp(other._key_comp) 
-			{
-				insert(other.begin(), other.end());
-			}
+			  _key_comp(other._key_comp)
+		{
+			insert(other.begin(), other.end());
+		}
 
 		~map() { clear(); }
 
@@ -144,7 +144,7 @@ namespace ft
 
 		template <class InputIt>
 		void insert(InputIt first, InputIt last,
-					typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = NULL)
+					typename ft::enable_if<!ft::is_integral<InputIt>::value>::type * = NULL)
 		{
 			while (first != last)
 			{

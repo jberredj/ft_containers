@@ -51,7 +51,7 @@ namespace ft
 			return current[-n - 1];
 		}
 
-		const reference operator[](difference_type n) const 
+		const reference operator[](difference_type n) const
 		{
 			return current[-n - 1];
 		}

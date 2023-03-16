@@ -6,12 +6,14 @@
 
 namespace ft
 {
-	template <class T> class mapCIterator;
+	template <class T>
+	class mapCIterator;
 	template <class T>
 	class mapIterator : public ft::iterator<std::bidirectional_iterator_tag, T>
 	{
 	private:
-		typedef ft::iterator<std::bidirectional_iterator_tag, typename T::value_type>	_iterator;
+		typedef ft::iterator<std::bidirectional_iterator_tag, typename T::value_type> _iterator;
+
 	public:
 		typedef mapIterator iterator_type;
 		typedef typename _iterator::value_type value_type;
@@ -75,15 +77,15 @@ namespace ft
 			return !(*this == rhs);
 		}
 
-		operator mapCIterator<node_type> (void) { return (mapCIterator<node_type>(_pNode, _pRoot)); }
+		operator mapCIterator<node_type>(void) { return (mapCIterator<node_type>(_pNode, _pRoot)); }
 	};
-
 
 	template <class T>
 	class mapCIterator : public ft::iterator<std::bidirectional_iterator_tag, T>
 	{
 	private:
-		typedef ft::iterator<std::bidirectional_iterator_tag, typename T::value_type const>	_iterator;
+		typedef ft::iterator<std::bidirectional_iterator_tag, typename T::value_type const> _iterator;
+
 	public:
 		typedef mapCIterator iterator_type;
 		typedef typename _iterator::value_type value_type;
@@ -97,7 +99,7 @@ namespace ft
 
 		mapCIterator(void) : _pNode(NULL), _pRoot(NULL) {}
 		mapCIterator(const node_type *node, const node_type *root) : _pNode(node), _pRoot(root) {}
-		mapCIterator(const mapIterator<node_type> &it): _pNode(it._pNode), _pRoot(it._pRoot) {}
+		mapCIterator(const mapIterator<node_type> &it) : _pNode(it._pNode), _pRoot(it._pRoot) {}
 		mapCIterator(const mapCIterator &cit) : _pNode(cit._pNode), _pRoot(cit._pRoot) {}
 		~mapCIterator(void) {}
 
@@ -147,7 +149,6 @@ namespace ft
 		{
 			return !(*this == rhs);
 		}
-
 	};
 }
 

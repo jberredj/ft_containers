@@ -1,12 +1,18 @@
 #ifndef ENABLE_IF_HPP
-# define ENABLE_IF_HPP
+#define ENABLE_IF_HPP
 
-namespace ft {
+namespace ft
+{
 	// once again cppreference carries https://en.cppreference.com/w/cpp/types/enable_if
 	template <bool, typename T = void>
-	struct enable_if {};
+	struct enable_if
+	{
+	};
 
 	template <typename T>
-	struct enable_if<true, T>  { typedef T type; };
+	struct enable_if<true, T>
+	{
+		typedef T type;
+	};
 };
 #endif
