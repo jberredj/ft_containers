@@ -328,9 +328,9 @@ namespace ft
 			}
 			else
 			{
-				if (sibling->right->isBlack())
+				if ((sibling->*getChild2)()->isBlack())
 				{
-					sibling->left->color = ft::BLACK;
+					(sibling->*getChild1)()->color = ft::BLACK;
 					sibling->color = ft::RED;
 					(this->*rotateFunc2)(*sibling);
 					sibling = (transplantedNode->parent->*getChild2)(); // transplantedNode->sibling() might work TODO: Test this
