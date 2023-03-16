@@ -396,7 +396,7 @@ namespace ft
 				nearestGreaterNode->left->parent = nearestGreaterNode;
 				nearestGreaterNode->color = toDelete->color;
 			}
-			_null->parent = _null;
+			// _null->parent = _null;
 			if (ogColor == ft::BLACK)
 				_removeFixup(transplantedNode);
 			_nalloc.destroy(toDelete);
