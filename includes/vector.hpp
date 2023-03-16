@@ -49,7 +49,7 @@ namespace ft
 			   typename ft::enable_if<!ft::is_integral<InputIt>::value>::type * = NULL)
 			: _alloc(alloc), _array(_alloc.allocate(0)), _size(0), _capacity(0)
 		{
-			assign(first, last); // TODO: implement assign
+			assign(first, last);
 		}
 
 		vector(const vector &other)
@@ -74,7 +74,7 @@ namespace ft
 		void assign(size_type count, const T &value)
 		{
 			clear();
-			insert(begin(), count, value); // TODO: implement insert
+			insert(begin(), count, value);
 		}
 
 		template <class InputIt>

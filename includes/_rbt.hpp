@@ -17,7 +17,7 @@ namespace ft
 		typedef Compare key_compare;
 		typedef RBNode<value_type> rbnode_t;
 		typedef mapIterator<rbnode_t> iterator;
-		typedef mapCIterator<rbnode_t> const_iterator; // FIXME: A proper const mapIterator maybe needed
+		typedef mapCIterator<rbnode_t> const_iterator;
 	private:
 		typedef typename Allocator::template rebind<RBNode<T> >::other _Node_alloc; // templated typedef would not work without ::template
 		typedef void (RBT::*rotateFuncP)(rbnode_t &);
@@ -107,11 +107,6 @@ namespace ft
 		}
 
 		bool insertSucceed(void) const { return _insertionSucceed; }
-
-		// rbnode_t *search(T key)
-		// {
-		// 	return _search(_root);
-		// }
 
 		rbnode_t *search(T key) const
 		{
@@ -282,7 +277,7 @@ namespace ft
 				sibling->color = ft::BLACK;
 				transplantedNode->parent->color = ft::RED;
 				(this->*rotateFunc1)(*transplantedNode->parent);
-				sibling = (transplantedNode->parent->*getChild2)(); // transplantedNode->sibling() might work TODO: Test this
+				sibling = (transplantedNode->parent->*getChild2)();
 			}
 			if ((sibling->*getChild1)()->isBlack() && (sibling->*getChild2)()->isBlack())
 			{
@@ -296,7 +291,7 @@ namespace ft
 					(sibling->*getChild1)()->color = ft::BLACK;
 					sibling->color = ft::RED;
 					(this->*rotateFunc2)(*sibling);
-					sibling = (transplantedNode->parent->*getChild2)(); // transplantedNode->sibling() might work TODO: Test this
+					sibling = (transplantedNode->parent->*getChild2)();
 				}
 				sibling->color = transplantedNode->parent->color;
 				transplantedNode->parent->color = ft::BLACK;
@@ -346,7 +341,7 @@ namespace ft
 				nearestGreaterNode = toDelete->right->min();
 				ogColor = nearestGreaterNode->color;
 				transplantedNode = nearestGreaterNode->right;
-				if (nearestGreaterNode->parent == toDelete) // nearestGreaterNode.isChildOf(toDelete) might work TODO: Test this
+				if (nearestGreaterNode->parent == toDelete)
 					transplantedNode->parent = nearestGreaterNode;
 				else
 				{

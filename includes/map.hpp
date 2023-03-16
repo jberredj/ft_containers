@@ -93,7 +93,6 @@ namespace ft
 			_alloc = rhs._alloc;
 			_key_comp = rhs._key_comp;
 			insert(rhs.begin(), rhs.end());
-			// _tree = rhs._tree;
 			return *this;
 		}
 

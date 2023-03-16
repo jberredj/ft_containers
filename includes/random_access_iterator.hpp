@@ -166,7 +166,6 @@ namespace ft
 
 		bool operator==(const iterator_type &rhs) const { return _value == rhs._value; }
 		bool operator!=(const iterator_type &rhs) const { return !(*this == rhs); }
-		// T &operator[](const difference_type offset) { return (*(_value + offset)); };
 		T const &operator[](const difference_type offset) const { return (*(_value + offset)); };
 
 		iterator_type operator+(difference_type offset) const
