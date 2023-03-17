@@ -11,8 +11,6 @@ public:
     MyClass(const int _x, const int _y);
     ~MyClass();
 
-    // Define the less-than operator for sorting in the map
-    // bool operator<(const MyClass& other) const;
     bool operator>(const MyClass& other) const;
     bool operator<=(const MyClass& other) const;
     

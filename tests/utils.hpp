@@ -2,9 +2,7 @@
 # define UTILS_HPP
 # include <ctime>
 # include <iostream>
-// typedef int (*test_func)(unsigned int);
 
-// int	timeTest(const char* testName, test_func func, unsigned int seed);
 
 template <template <typename> class Cntr, class T>
 int	timeTest(const char* testName, int (*f)(unsigned int, Cntr<T>&), Cntr<T>& cntr, unsigned int seed) {
