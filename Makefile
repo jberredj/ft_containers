@@ -1,8 +1,7 @@
 NAME			=	ft_containers
 
 CXX				=	clang++
-OPTI			=	# -O3
-CXXFLAGS		=	-Wall -Werror -Wextra -std=c++98 $(OPTI) -g
+CXXFLAGS		=	-Wall -Werror -Wextra -std=c++98 -g #-fsanitize=address
 LDFLAGS			=	
 
 SRC_DIR			= 	tests
@@ -17,9 +16,17 @@ LIBS			=
 ##								Source files								 ##
 ###############################################################################
 
-RBT					=	rbt_tests.cpp
-RBT_SRCS			=   $(addprefix $(SRC_DIR)/rbt/, $(RBT))
-RBT_OBJS			=   $(addprefix $(OBJ_DIR)/rbt., $(subst /,., $(RBT:.cpp=.o)))
+MAP					=	map_tests.cpp
+MAP_SRCS			=   $(addprefix $(SRC_DIR)/map/, $(MAP))
+MAP_OBJS			=   $(addprefix $(OBJ_DIR)/map., $(subst /,., $(MAP:.cpp=.o)))
+
+STACK				=	stack_tests.cpp
+STACK_SRCS			=   $(addprefix $(SRC_DIR)/stack/, $(STACK))
+STACK_OBJS			=   $(addprefix $(OBJ_DIR)/stack., $(subst /,., $(STACK:.cpp=.o)))
+
+VECTOR				=
+VECTOR_SRCS			=   $(addprefix $(SRC_DIR)/vector/, $(VECTOR))
+VECTPR_OBJS			=   $(addprefix $(OBJ_DIR)/vector., $(subst /,., $(VECTOR:.cpp=.o)))
 
 UTILS				=	randomValue.cpp MyClass.cpp# utils.cpp 
 UTILS_SRCS			=   $(addprefix $(SRC_DIR)/, $(UTILS))
@@ -29,8 +36,8 @@ MAIN				=	main.cpp
 MAIN_SRCS			=   $(addprefix $(SRC_DIR)/, $(MAIN))
 MAIN_OBJS			=   $(addprefix $(OBJ_DIR)/, $(subst /,., $(MAIN:.cpp=.o)))
 
-SRCS				=	$(MAIN_SRCS) $(RBT_SRCS) $(UTILS_SRCS)
-OBJS				= 	$(MAIN_OBJS) $(RBT_OBJS) $(UTILS_OBJS)
+SRCS				=	$(MAIN_SRCS) $(MAP_SRCS) $(UTILS_SRCS) $(STACK_SRCS) $(VECTOR_SRCS)
+OBJS				= 	$(MAIN_OBJS) $(MAP_OBJS) $(UTILS_OBJS) $(STACK_OBJS) $(VECTOR_OBJS)
 
 ###############################################################################
 ##							Color output char								 ##
@@ -96,7 +103,7 @@ $(DEPS_DIR)/dependencies.d: $(SRCS)
 	mkdir -p $(DEPS_DIR)
 	$(foreach source,$(SRCS),\
 	echo "$(subst $(SRC_DIR).,$(OBJ_DIR)/,$(subst /,.,$(dir $(source))))`\
-$(CXX) -I $(INC_DIR) $(source) -MM`\n\t \$$(COMPILE)"\
+$(CXX) -I $(INC_DIR) $(CXXFLAGS) $(source) -MM`\n\t \$$(COMPILE)"\
 	> $(DEPS_DIR)/$(subst /,.,$(subst srcs/,,$(source:.cpp=.d)));)
 	cd $(DEPS_DIR)&& cat `ls | grep -v dependencies.d` > dependencies.d
 
@@ -109,28 +116,22 @@ $(TESTS_OUTPUT):
 valgrind:
 	valgrind --leak-check=full --show-leak-kinds=all ./$(NAME)
 
-rbt_test: CXXFLAGS+=-D STANDALONE -D BSTTEST
-rbt_test: $(OBJ_DIR) $(TESTS_OUTPUT) $(UTILS_SRCS) $(UTILS_OBJS) $(RBT_SRCS) $(RBT_OBJS)
+map_test: CXXFLAGS+=-D STANDALONE -D BSTTEST
+map_test: $(OBJ_DIR) $(TESTS_OUTPUT) $(UTILS_SRCS) $(UTILS_OBJS) $(MAP_SRCS) $(MAP_OBJS)
 	printf "$(BLUE)Linking $(LIGHT_PURPLE)$@ $(BLUE)executable$(NC)\n"	
-	$(CXX) -I $(INC_DIR) $(RBT_OBJS) $(UTILS_OBJS) $(LIBS) $(LDFLAGS) $(CXXFLAGS) -o $(TESTS_OUTPUT)/$@
-	printf "$(GREEN)Completed$(NC)\n"
-
-map_test: CXXFLAGS+=-D STANDALONE
-map_test: $(OBJ_DIR) $(MAP_SRCS) $(MAP_OBJS)
-	printf "$(BLUE)Linking $(LIGHT_PURPLE)$@ $(BLUE)executable$(NC)\n"	
-	$(CXX) -I $(INC_DIR) $(RBT_OBJS) $(LIBS) $(LDFLAGS) $(CXXFLAGS) -o $(TESTS_OUTPUT)/$@
+	$(CXX) -I $(INC_DIR) $(MAP_OBJS) $(UTILS_OBJS) $(LIBS) $(LDFLAGS) $(CXXFLAGS) -o $(TESTS_OUTPUT)/$@
 	printf "$(GREEN)Completed$(NC)\n"
 
 stack_test: CXXFLAGS+=-D STANDALONE
-stack_test: $(OBJ_DIR) $(STACK_SRCS) $(STACK_OBJS)
+stack_test: $(OBJ_DIR) $(TESTS_OUTPUT) $(UTILS_SRCS) $(UTILS_OBJS) $(STACK_SRCS) $(STACK_OBJS)
 	printf "$(BLUE)Linking $(LIGHT_PURPLE)$@ $(BLUE)executable$(NC)\n"
-	$(CXX) -I $(INC_DIR) $(RBT_OBJS) $(LIBS) $(LDFLAGS) $(CXXFLAGS) -o $(TESTS_OUTPUT)/$@
+	$(CXX) -I $(INC_DIR) $(STACK_OBJS) $(UTILS_OBJS)  $(LIBS) $(LDFLAGS) $(CXXFLAGS) -o $(TESTS_OUTPUT)/$@
 	printf "$(GREEN)Completed$(NC)\n"
 
 vector_test: CXXFLAGS+=-D STANDALONE
-vector_test: $(OBJ_DIR) $(VECTOR_SRCS) $(VECTOR_OBJS)
+vector_test: $(OBJ_DIR)  $(UTILS_SRCS) $(UTILS_OBJS) $(VECTOR_SRCS) $(VECTOR_OBJS)
 	printf "$(BLUE)Linking $(LIGHT_PURPLE)$@ $(BLUE)executable$(NC)\n"
-	$(CXX) -I $(INC_DIR) $(RBT_OBJS) $(LIBS) $(LDFLAGS) $(CXXFLAGS) -o $(TESTS_OUTPUT)/$@
+	$(CXX) -I $(INC_DIR) $(VECTOR_OBJS) $(LIBS) $(LDFLAGS) $(CXXFLAGS) -o $(TESTS_OUTPUT)/$@
 	printf "$(GREEN)Completed$(NC)\n"
 
 .PHONY: rbt_test

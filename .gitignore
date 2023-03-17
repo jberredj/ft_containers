@@ -2,8 +2,10 @@ a.out
 *.o
 *.d
 42TESTERS-CONTAINERS
+42_Containator
 container_tester
 containers_test
+ft_containers-tester-42
 ft_containers
 std_containers
 .test.sh.swp
