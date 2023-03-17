@@ -198,7 +198,7 @@ int main(int ac, char *av[])
 	}
 	unsigned int seed = atoi(av[1]);
 #else
-int rbt_main(unsigned int seed)
+int stack_main(unsigned int seed)
 {
 #endif
 	std::cout << "testAllStack<int>" << std::endl;

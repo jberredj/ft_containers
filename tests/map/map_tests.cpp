@@ -599,7 +599,7 @@ int main(int ac, char *av[])
 	}
 	unsigned int seed = atoi(av[1]);
 #else
-int rbt_main(unsigned int seed)
+int map_main(unsigned int seed)
 {
 #endif
 	std::cout << "testAll<int, int>" << std::endl;
