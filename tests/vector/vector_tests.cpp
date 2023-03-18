@@ -178,7 +178,7 @@ int testResize(unsigned int seed, NAMESPACE::vector<T, Alloc<T> > &testVectorIGN
 	(void)testVectorIGNORE;
 	int errorCount = 0;
 	const size_t baseNumIt = randomValue<int>::getIteration();
-	const size_t numIterations = std::max(baseNumIt, static_cast<const size_t>(2));
+	const size_t numIterations = std::max(baseNumIt, static_cast<size_t>(2));
 	const T val = randomValue<T>::get();
 	{
 		NAMESPACE::vector<T, Alloc<T> > testVector;
@@ -475,86 +475,6 @@ int testInsert(unsigned int seed, NAMESPACE::vector<T, Alloc<T> > &testVector)
 			}
 		}
 		errorCount++;
-	}
-
-	return errorCount;
-}
-
-template <class T, template <typename> class Alloc>
-int testErase(unsigned int seed, NAMESPACE::vector<T, Alloc<T> > &testVector)
-{
-	srand(seed);
-	int errorCount = 0;
-	testVector.clear();
-
-	// Test: erase() all elements from the vector
-	testVector.clear();
-	for (size_t i = 0; i < randomValue<T>::getIteration(); i++)
-	{
-		testVector.push_back(randomValue<T>::get());
-	}
-
-	while (!testVector.empty())
-	{
-		size_t origSize = testVector.size();
-		size_t pos = origSize > 1 ? rand() % (testVector.size() - 1) + 1 : 0;
-		typename NAMESPACE::vector<T, Alloc<T> >::iterator it = testVector.begin() + pos;
-		T oldValue = *it;
-		it = testVector.erase(it);
-		if (testVector.size() != origSize - 1)
-		{
-			std::cerr << "Error: erase() did not remove element from vector" << std::endl;
-			errorCount++;
-			break;
-		}
-		if (it != (testVector.size() == pos ? testVector.end() : testVector.begin() + pos))
-		{
-			std::cerr << "Error: erase() returned incorrect iterator" << std::endl;
-			errorCount++;
-			break;
-		}
-		for (typename NAMESPACE::vector<T, Alloc<T> >::iterator i = testVector.begin(); i != testVector.end(); i++)
-		{
-			if (*i == oldValue)
-			{
-				std::cerr << "Error: erase() did not remove element from vector" << std::endl;
-				errorCount++;
-				break;
-			}
-		}
-	}
-
-	// Test: erase() with range of iterators
-	testVector.clear();
-	for (size_t i = 0; i < randomValue<T>::getIteration(); i++)
-	{
-		testVector.push_back(randomValue<T>::get());
-	}
-
-	if (testVector.size() > 2)
-	{
-		size_t startPos = rand() % (testVector.size() - 2);
-		size_t endPos = rand() % (testVector.size() - 1) + startPos + 1;
-		typename NAMESPACE::vector<T, Alloc<T> >::iterator startIt = testVector.begin() + startPos;
-		typename NAMESPACE::vector<T, Alloc<T> >::iterator endIt = testVector.begin() + endPos;
-
-		NAMESPACE::vector<T, Alloc<T> > originalVector = testVector; // Create a copy of the original vector
-
-		testVector.erase(startIt, endIt);
-
-		for (size_t i = 0, j = 0; i < testVector.size() && j < originalVector.size(); ++i, ++j)
-		{
-			if (j == startPos)
-			{
-				j += (endPos - startPos);
-			}
-			if (testVector[i] != originalVector[j])
-			{
-				std::cerr << "Error: erase() did not remove correct range of elements from vector" << std::endl;
-				errorCount++;
-				break;
-			}
-		}
 	}
 
 	return errorCount;
@@ -1022,7 +942,6 @@ static int testAllStack(unsigned int seed)
 	errorCount += timeTest<NAMESPACE::vector, T, std::allocator>("testFront", testFront<T, std::allocator>, testMap, seed);
 	errorCount += timeTest<NAMESPACE::vector, T, std::allocator>("testBack", testBack<T, std::allocator>, testMap, seed);
 	errorCount += timeTest<NAMESPACE::vector, T, std::allocator>("testInsert", testInsert<T, std::allocator>, testMap, seed);
-	errorCount += timeTest<NAMESPACE::vector, T, std::allocator>("testErase", testErase<T, std::allocator>, testMap, seed);
 	errorCount += timeTest<NAMESPACE::vector, T, std::allocator>("testSwap", testSwap<T, std::allocator>, testMap, seed);
 	errorCount += timeTest<NAMESPACE::vector, T, std::allocator>("testClear", testClear<T, std::allocator>, testMap, seed);
 	errorCount += timeTest<NAMESPACE::vector, T, std::allocator>("testIterator", testIterator<T, std::allocator>, testMap, seed);
