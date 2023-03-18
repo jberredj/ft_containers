@@ -17,4 +17,6 @@ namespace ft {
 
 	};
 }
+
+int map_main(unsigned int seed);
 #endif

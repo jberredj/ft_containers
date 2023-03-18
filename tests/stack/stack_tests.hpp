@@ -11,4 +11,7 @@ namespace ft {
 
 	};
 }
+
+int stack_main(unsigned int seed);
+
 #endif

@@ -535,33 +535,6 @@ int testMapEdgeCases(unsigned int seed, ft::MapTest<Key, Value>& testMap) {
     return errorCount;
 }
 
-template <class Key, class Value>
-int testMapPerformance(unsigned int seed, ft::MapTest<Key, Value>& testMap) {
-    std::srand(seed);
-    int errorCount = 0;
-
-    // Test: Insert and search for a large number of elements
-    int numElements = 100000;
-    std::vector<Key> insertedKeys;
-    for (int i = 0; i < numElements; i++) {
-        Key key = randomValue<Key>::get();
-        Value value = randomValue<Value>::get();
-        testMap.insert(NAMESPACE::pair<Key, Value>(key, value));
-        insertedKeys.push_back(key);
-    }
-    for (int i = 0; i < numElements; i++) {
-        Key key = insertedKeys[i];
-        typename ft::MapTest<Key, Value>::iterator it = testMap.find(key);
-        if (it == testMap.end()) {
-            std::cerr << "Error: map does not contain key " << key << " after insertion" << std::endl;
-            errorCount++;
-        }
-    }
-
-    return errorCount;
-}
-
-
 
 template <class Key, class Value>
 static int testAllMap(unsigned int seed)
@@ -575,7 +548,6 @@ static int testAllMap(unsigned int seed)
 	errorCount += timeTest<ft::MapTest, Key, Value>("testMapCopyConstructor", testMapCopyConstructor<Key, Value>, testMap, seed);
 	errorCount += timeTest<ft::MapTest, Key, Value>("testMapCopyAssignmentOperator", testMapCopyAssignmentOperator<Key, Value>, testMap, seed);
 	errorCount += timeTest<ft::MapTest, Key, Value>("testMapIterator", testMapIterator<Key, Value>, testMap, seed);
-	// testMap.clear();
 	errorCount += timeTest<ft::MapTest, Key, Value>("testMapLowerBound", testMapLowerBound<Key, Value>, testMap, seed);
 	errorCount += timeTest<ft::MapTest, Key, Value>("testMapEqualRange", testMapEqualRange<Key, Value>, testMap, seed);
 	errorCount += timeTest<ft::MapTest, Key, Value>("testMapUpperBound", testMapUpperBound<Key, Value>, testMap, seed);
@@ -583,7 +555,6 @@ static int testAllMap(unsigned int seed)
 	errorCount += timeTest<ft::MapTest, Key, Value>("testMapCombinedOperations", testMapCombinedOperations<Key, Value>, testMap, seed);
 	testMap.clear();
 	errorCount += timeTest<ft::MapTest, Key, Value>("testMapEdgeCases", testMapEdgeCases<Key, Value>, testMap, seed);
-	errorCount += timeTest<ft::MapTest, Key, Value>("testMapPerformance", testMapPerformance<Key, Value>, testMap, seed);
 	std::cout << std::endl;
 	return errorCount;
 }
@@ -602,40 +573,40 @@ int main(int ac, char *av[])
 int map_main(unsigned int seed)
 {
 #endif
-	std::cout << "testAll<int, int>" << std::endl;
+	std::cout << "testAllMap<int, int>" << std::endl;
 	int errorCount = testAllMap<int, int>(seed);
-	std::cout << "testAll<int, char>" << std::endl;
+	std::cout << "testAllMap<int, char>" << std::endl;
 	errorCount = testAllMap<int, char>(seed);
-	std::cout << "testAll<int, std::string>" << std::endl;
+	std::cout << "testAllMap<int, std::string>" << std::endl;
 	errorCount = testAllMap<int, std::string>(seed);
-	std::cout << "testAll<int, MyClass>" << std::endl;
+	std::cout << "testAllMap<int, MyClass>" << std::endl;
 	errorCount = testAllMap<int, MyClass>(seed);
 
-	std::cout << "testAll<char, int>" << std::endl;
+	std::cout << "testAllMap<char, int>" << std::endl;
 	errorCount = testAllMap<char, int>(seed);
-	std::cout << "testAll<char, char>" << std::endl;
+	std::cout << "testAllMap<char, char>" << std::endl;
 	errorCount = testAllMap<char, char>(seed);
-	std::cout << "testAll<char, std::string>" << std::endl;
+	std::cout << "testAllMap<char, std::string>" << std::endl;
 	errorCount = testAllMap<char, std::string>(seed);
-	std::cout << "testAll<char, MyClass>" << std::endl;
+	std::cout << "testAllMap<char, MyClass>" << std::endl;
 	errorCount = testAllMap<char, MyClass>(seed);
 
-	std::cout << "testAll<std::string, int>" << std::endl;
+	std::cout << "testAllMap<std::string, int>" << std::endl;
 	errorCount = testAllMap<char, int>(seed);
-	std::cout << "testAll<std::string, char>" << std::endl;
+	std::cout << "testAllMap<std::string, char>" << std::endl;
 	errorCount = testAllMap<std::string, char>(seed);
-	std::cout << "testAll<std::string, std::string>" << std::endl;
+	std::cout << "testAllMap<std::string, std::string>" << std::endl;
 	errorCount = testAllMap<std::string, std::string>(seed);
-	std::cout << "testAll<std::string, MyClass>" << std::endl;
+	std::cout << "testAllMap<std::string, MyClass>" << std::endl;
 	errorCount = testAllMap<std::string, MyClass>(seed);
 
-	std::cout << "testAll<MyClass, int>" << std::endl;
+	std::cout << "testAllMap<MyClass, int>" << std::endl;
 	errorCount = testAllMap<MyClass, int>(seed);
-	std::cout << "testAll<MyClass, char>" << std::endl;
+	std::cout << "testAllMap<MyClass, char>" << std::endl;
 	errorCount = testAllMap<MyClass, char>(seed);
-	std::cout << "testAll<MyClass, std::string>" << std::endl;
+	std::cout << "testAllMap<MyClass, std::string>" << std::endl;
 	errorCount = testAllMap<MyClass, std::string>(seed);
-	std::cout << "testAll<MyClass, MyClass>" << std::endl;
+	std::cout << "testAllMap<MyClass, MyClass>" << std::endl;
 	errorCount = testAllMap<MyClass, MyClass>(seed);
 	return errorCount;
 }

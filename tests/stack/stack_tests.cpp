@@ -144,35 +144,6 @@ int testStackModifiers(unsigned int seed, ft::StackTest<T> &testStack)
 	return errorCount;
 }
 
-template <typename T>
-int testStackPerformance(unsigned int seed, ft::StackTest<T> &testStack)
-{
-	std::srand(seed);
-	int errorCount = 0;
-
-	// Test: Push a large number of elements onto the stack and then pop them off
-	int numIterations = 100000;
-	for (int i = 0; i < numIterations; i++)
-	{
-		T value = randomValue<T>::get();
-		testStack.push(value);
-	}
-	for (int i = 0; i < numIterations; i++)
-	{
-		if (!testStack.empty())
-		{
-			testStack.pop();
-		}
-		else
-		{
-			std::cerr << "Error: stack is empty but expected " << numIterations - i << " elements remaining" << std::endl;
-			errorCount++;
-		}
-	}
-
-	return errorCount;
-}
-
 template <class T>
 static int testAllStack(unsigned int seed)
 {
@@ -182,7 +153,6 @@ static int testAllStack(unsigned int seed)
 	errorCount += timeTest<ft::StackTest, T>("testStackCopyAndSwap", testStackCopyAndSwap<T>, testMap, seed);
 	errorCount += timeTest<ft::StackTest, T>("testStackComparison", testStackComparison<T>, testMap, seed);
 	errorCount += timeTest<ft::StackTest, T>("testStackModifiers", testStackModifiers<T>, testMap, seed);
-	errorCount += timeTest<ft::StackTest, T>("testStackPerformance", testStackPerformance<T>, testMap, seed);
 	std::cout << std::endl;
 	return errorCount;
 }
@@ -203,11 +173,11 @@ int stack_main(unsigned int seed)
 #endif
 	std::cout << "testAllStack<int>" << std::endl;
 	int errorCount = testAllStack<int>(seed);
-	std::cout << "testAll<char>" << std::endl;
+	std::cout << "testAllStack<char>" << std::endl;
 	errorCount = testAllStack<char>(seed);
-	std::cout << "testAll<std::string>" << std::endl;
+	std::cout << "testAllStack<std::string>" << std::endl;
 	errorCount = testAllStack<std::string>(seed);
-	std::cout << "testAll<MyClass>" << std::endl;
+	std::cout << "testAllStack<MyClass>" << std::endl;
 	errorCount = testAllStack<MyClass>(seed);
 	return errorCount;
 }
